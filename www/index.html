@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<!--HTML5 doctype-->
+<html>
+	<!--   
+   You may substitute jQuery for the App Framework selector library.
+   See http://app-framework-software.intel.com/documentation.php#afui/afui_jquery
+  -->
+	<!-- content goes here-->
+
+	<head>
+		<meta charset="UTF-8">
+		<link rel="stylesheet" type="text/css" href="app_framework/2.1/css/af.ui.min.css">
+		<link rel="stylesheet" type="text/css" href="app_framework/2.1/css/icons.min.css">
+		<link rel="stylesheet" type="text/css" href="css/index_main.less.css" class="main-less">
+		<title>Your New Application</title>
+		<meta http-equiv="Content-type" content="text/html; charset=utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=0">
+		<style type="text/css">
+			/* Prevent copy paste for all elements except text fields */
+			*  { -webkit-user-select:none; -webkit-tap-highlight-color:rgba(255, 255, 255, 0); }
+			input, textarea  { -webkit-user-select:text; }
+		</style>
+		<script src="intelxdk.js"></script>
+		<script type="text/javascript">
+			/* Intel native bridge is available */
+			var onDeviceReady=function(){
+			//hide splash screen
+			intel.xdk.device.hideSplashScreen();
+			};
+			document.addEventListener("intel.xdk.device.ready",onDeviceReady,false);
+		</script>
+		<!--   
+   You may substitute jQuery for the App Framework selector library.
+   See http://app-framework-software.intel.com/documentation.php#afui/afui_jquery
+  -->
+		<script type="application/javascript" src="app_framework/2.1/appframework.js"></script>
+		<script type="application/javascript" src="app_framework/2.1/appframework.ui.js" data-ver="1"></script>
+		<script src="cordova.js"></script>
+	</head>
+
+	<body id="afui" style="  background-color: #fff3a1">
+
+		<!-- content goes here-->
+		<div class="uwrap" id="content">
+			<div class="upage panel" id="mainpage" data-header="af-header-0" data-footer="none">
+				<div class="upage-outer">
+					<header class="container-group inner-element uib_w_1 header-img" data-uib="app_framework/header" data-ver="1" id="af-header-0">
+						<img src="images/glbtnearmelogo.png">
+					</header>
+					<div class="upage-content" id="mainsub">
+					</div>
+					<!-- /upage-content -->
+
+				</div>
+				<!-- /upage-outer -->
+
+			</div>
+			<!-- /upage -->
+
+		</div>
+		<!-- /uwrap -->
+	</body>
+
+</html>
