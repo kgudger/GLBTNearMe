@@ -271,3 +271,87 @@ body:not(#afui) .upage-outer {
 .header-img {
   background-color: #fff3a1;
 }
+@media all {
+  #afui .grid-pad {
+    padding-top: 10px;
+    padding-bottom: 10px;
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+}
+@media all and (min-width: 0px) {
+  #afui .row-height-1 > .col > .content-area {
+    min-height: 100px;
+  }
+}
+@media all and (min-width: 0px) {
+  #afui .row-height-2 > .col > .content-area {
+    min-height: 100px;
+  }
+}
+@media all and (min-width: 0px) {
+  #afui .row-height-3 > .col > .content-area {
+    min-height: 100px;
+  }
+}
+#afui .button-grouped > .d-margins {
+  margin: 0;
+}
+@media all {
+  #afui .d-margins {
+    margin-top: 5px;
+    margin-bottom: 6px;
+  }
+  #afui .wrapping-col > .d-margins {
+    margin-left: 4px;
+    margin-right: 5px;
+  }
+}
+@media all and (min-width: 0px) {
+  #afui .row-height-4 > .col > .content-area {
+    min-height: 100px;
+  }
+}
+@media all and (min-width: 0px) {
+  #afui .row-height-5 > .col > .content-area {
+    min-height: 100px;
+  }
+}
+@media all and (min-width: 0px) {
+  #afui .row-height-6 > .col > .content-area {
+    min-height: 100px;
+  }
+}
+.left-receptacle {
+  float: left;
+}
+.right-receptacle {
+  float: right;
+}
+#afui .with-label label.narrow-control {
+  float: none;
+}
+#afui .with-label label.narrow-control + * {
+  display: block;
+  width: 100% !important;
+  margin-bottom: 0 !important;
+}
+#afui .with-label label.narrow-control:empty {
+  display: none;
+}
+#afui .with-label .label-inline {
+  width: 30%;
+  vertical-align: middle;
+}
+#afui .with-label .label-top-left,
+#afui .with-label .label-top-right {
+  width: auto !important;
+  display: block;
+  padding: 8px 4px 4px;
+}
+#afui .with-label .label-top-left {
+  text-align: left !important;
+}
+#afui .with-label .label-top-right {
+  text-align: right !important;
+}

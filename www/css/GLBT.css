@@ -1,7 +1,60 @@
 .footer-txt { 
   background-color: #fff3a1;
-  color: black;
-  font-size: 12px;
-  line-height:100%;
+  color: black !important;
+  font-size: 12px !important;
+  line-height:90% !important;
   text-align:center;
 }
+.footer-size {
+  background-attachment: no-scroll;
+  background-repeat:no-repeat;
+} 
+.begin-txt {
+  background-color: #fff3a1;
+  color: black !important;
+  font-size: 12px !important;
+  line-height:100% !important;
+  text-align:center;
+}
+.begin-div {
+  width:100%;
+}
+.second-div {
+  width:100%;
+}
+img.displaycenter {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+.buttonleft {
+  float: right;
+}
+.buttonright {
+  float: left;
+  margin-left:10px;
+}
+.purpleButton {
+  white-space: normal;
+ text-decoration:none; 
+ text-align:center; 
+ padding:11px 11px; 
+ border:solid 4px #000000; 
+ -webkit-border-radius:20px;
+ -moz-border-radius:20px; 
+ border-radius: 20px; 
+ font:18px Arial, Helvetica, sans-serif; 
+ font-weight:bold; 
+ color:#E5FFFF; 
+ background-color:#9c35cc; 
+ background-image: -moz-linear-gradient(top, #9c35cc 0%, #5a0584 100%); 
+ background-image: -webkit-linear-gradient(top, #9c35cc 0%, #5a0584 100%); 
+ background-image: -o-linear-gradient(top, #9c35cc 0%, #5a0584 100%); 
+ background-image: -ms-linear-gradient(top, #9c35cc 0% ,#5a0584 100%); 
+ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#5a0584', endColorstr='#5a0584',GradientType=0 ); 
+ background-image: linear-gradient(top, #9c35cc 0% ,#5a0584 100%);   
+ -webkit-box-shadow:0px 0px 2px #bababa, inset 0px 0px 1px #ffffff; 
+ -moz-box-shadow: 0px 0px 2px #bababa,  inset 0px 0px 1px #ffffff;  
+ box-shadow:0px 0px 2px #bababa, inset 0px 0px 1px #ffffff;  
+}
+
