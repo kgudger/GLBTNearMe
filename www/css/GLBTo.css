@@ -61,7 +61,7 @@ img.displaycenter {
   white-space: normal;
  text-decoration:none; 
  text-align:center; 
- padding:5px 11px; 
+ padding:11px 11px; 
  border:solid 4px #000000; 
  -webkit-border-radius:20px;
  -moz-border-radius:20px; 
@@ -69,13 +69,13 @@ img.displaycenter {
  font:18px Arial, Helvetica, sans-serif; 
  font-weight:bold; 
  color:#E5FFFF; 
- background-color:#fff927; 
- background-image: -moz-radial-gradient(top, #fff927 0%, #f14e0b 100%); 
- background-image: -webkit-radial-gradient(top, #fff927 0%, #f14e0b 100%); 
- background-image: -o-radial-gradient(top, #fff927 0%, #f14e0b 100%); 
- background-image: -ms-radial-gradient(top, #fff927 0% ,#f14e0b 100%); 
- filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f14e0b', endColorstr='#f14e0b',GradientType=0 ); 
- background-image: radial-gradient(top, #fff927 0% ,#f14e0b 100%);   
+ background-color:#9c35cc; 
+ background-image: -moz-linear-gradient(top, #9c35cc 0%, #5a0584 100%); 
+ background-image: -webkit-linear-gradient(top, #9c35cc 0%, #5a0584 100%); 
+ background-image: -o-linear-gradient(top, #9c35cc 0%, #5a0584 100%); 
+ background-image: -ms-linear-gradient(top, #9c35cc 0% ,#5a0584 100%); 
+ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#5a0584', endColorstr='#5a0584',GradientType=0 ); 
+ background-image: linear-gradient(top, #9c35cc 0% ,#5a0584 100%);   
  -webkit-box-shadow:0px 0px 2px #bababa, inset 0px 0px 1px #ffffff; 
  -moz-box-shadow: 0px 0px 2px #bababa,  inset 0px 0px 1px #ffffff;  
  box-shadow:0px 0px 2px #bababa, inset 0px 0px 1px #ffffff;  
@@ -103,7 +103,7 @@ img.displaycenter {
 	width: 258px;
 	left: 393px;
 	top: 594px;*/
-	height: 40px;
+	height: 20px;
 	text-align: left;
 	color: black;
 }
