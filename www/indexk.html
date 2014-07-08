@@ -39,6 +39,33 @@
 			intel.xdk.device.hideSplashScreen();
 			};
 			document.addEventListener("intel.xdk.device.ready",onDeviceReady,false);
+
+			function donateFn() {
+//				intel.xdk.device.launchExternal("http://www.volunteerlogin.org/GLBTNearMe/donate.html");
+				window.open('http://www.volunteerlogin.org/GLBTNearMe/donate.html');
+			};
+			function nationalFn() {
+			    var xmlhttp;
+				try {
+				    xmlhttp=new XMLHttpRequest();
+				} catch(e) {
+					xmlhttp = false;
+				}
+				if (xmlhttp) {
+				    xmlhttp.onreadystatechange=function()
+				    {
+				      if (xmlhttp.readyState==4 && xmlhttp.status==200)
+				      {
+							alert(xmlhttp.responseText);
+					  }
+					}
+				}
+				var params = "zip=95073&miles=15&category=Business&submit=Search";
+				xmlhttp.open("GET","https://volunteerlogin.org/GLBTNearMe/AppResults.php" + '?' + params, true);
+//				xmlhttp.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+//			    xmlhttp.send(params);
+			    xmlhttp.send(null);
+			};
 		</script>
 		<!--   
    You may substitute jQuery for the App Framework selector library.
@@ -111,10 +138,10 @@
 </div>
 						<div> <p></p> </div>
 						<div id="button1" style="width:50%; float:left;">
-<input class="buttonleft purpleButton" type="submit" name="National" value="National Listings">
+<input id="NationalButton" class="buttonleft purpleButton" type="button" name="National" value="National Listings" onclick="nationalFn()">
 						</div>
 						<div id="button2" style="width:50%;float:right">
-<input class="buttonright purpleButton" type="submit" name="Donate" value="Donate Online">
+<input class="buttonright purpleButton" type="button" name="Donate" value="Donate Online" onclick="donateFn()">
 						</div>
 					</div>
 					<!-- /upage-content -->

@@ -39,6 +39,11 @@
 			intel.xdk.device.hideSplashScreen();
 			};
 			document.addEventListener("intel.xdk.device.ready",onDeviceReady,false);
+
+			function donateFn() {
+//				intel.xdk.device.launchExternal("http://www.volunteerlogin.org/GLBTNearMe/donate.html");
+				window.open('http://www.volunteerlogin.org/GLBTNearMe/donate.html');
+			}
 		</script>
 		<!--   
    You may substitute jQuery for the App Framework selector library.
@@ -101,8 +106,12 @@
 		<option value="Youth">Youth</option>
    </select>
   </div>
-
-       <button type="submit">Send</button>
+						<div id="buttonlist" style="width:50%; float:left;">
+<input class="buttonleft orangeButton" type="submit" name="List" value="List">
+						</div>
+						<div id="buttonmap" style="width:50%;float:right">
+<input class="buttonright orangeButton" type="submit" name="Map" value="Map">
+						</div>
     </div>
 </div>
 						<div> <p></p> </div>
@@ -110,7 +119,7 @@
 <input class="buttonleft purpleButton" type="submit" name="National" value="National Listings">
 						</div>
 						<div id="button2" style="width:50%;float:right">
-<input class="buttonright purpleButton" type="submit" name="Donate" value="Donate Online">
+<input class="buttonright purpleButton" type="button" name="Donate" value="Donate Online" onclick="donateFn()">
 						</div>
 					</div>
 					<!-- /upage-content -->
