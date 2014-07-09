@@ -6,16 +6,6 @@
    See http://app-framework-software.intel.com/documentation.php#afui/afui_jquery
   -->
 	<!-- content goes here-->
-	<!--   
-   You may substitute jQuery for the App Framework selector library.
-   See http://app-framework-software.intel.com/documentation.php#afui/afui_jquery
-  -->
-	<!-- content goes here-->
-	<!--   
-   You may substitute jQuery for the App Framework selector library.
-   See http://app-framework-software.intel.com/documentation.php#afui/afui_jquery
-  -->
-	<!-- content goes here-->
 
 	<head>
 		<meta charset="UTF-8">
@@ -258,7 +248,7 @@
 <input class="buttonleft orangeButton" type="button" name="List" value="List" onclick="listformFn()">
 						</div>
 						<div id="buttonmap" style="width:50%;float:right">
-<input class="buttonright orangeButton" type="submit" name="Map" value="Map">
+<input class="buttonright orangeButton" type="button" name="Map" value="Map" onclick="listformFn()">
 						</div>
     </div>
 	</form>
@@ -276,7 +266,7 @@
 					<div id="natsp" class="upage-content hidden">
 						<div><div id="buttonback" style="width:50%; float:left;"><a class="buttonleft widget uib_w_3 orangeButton" data-uib="app_framework/button" data-ver="1" href="#mainpage" data-transition="fade">Back</a>
 						</div>
-						<div id="buttonMap" style="width:50%; float:right;"><a class="buttonright orangeButton">Map</a>
+						<div id="buttonMap" style="width:50%; float:right;"><a class="buttonright widget uib_w_6 orangeButton" data-uib="app_framework/button" data-ver="1" href="#mapmainpage" data-transition="fade">Map</a>
 						</div></div>
 					<div id="natlisting" style="lstyle">
 <!--						<ul id="natlisting" class="none">
@@ -296,6 +286,27 @@
 				</div>
 				<!-- /upage-outer -->
 
+			</div>
+			<div class="upage panel" id="mapmainpage" data-header="af-header-1" data-footer="af-footer-1">
+				<div class="upage-outer">
+					<header class="container-group inner-element uib_w_1 header-img" data-uib="app_framework/header" data-ver="1" id="af-header-1">
+						<img class="displaycenter" src="images/glbtnearmelogo.png">
+					</header>
+					<div id="mapmainpagesub" class="upage-content ">
+
+						<div id="buttonback" style="float:left;"><a class="buttonleft widget uib_w_4 orangeButton" data-uib="app_framework/button" data-ver="1" href="#mainpage" data-transition="fade">Back</a>
+						</div> <!-- buttonback -->
+					</div> <!-- mapmainpagesub" upage-content -->
+					<footer class="inner-element uib_w_2 footer-txt" data-uib="app_framework/footer" data-ver="1" id="af-footer-1">
+						<p>If you need support or
+							<br>to speak with a volunter call:
+							<br>GLBT National Hotline: 1-888-843-4564
+							<br>GLBT National Youth Talkline:
+							<br>1-800-246-PRIDE</p>
+					</footer>
+
+				</div>
+				<!-- /upage-outer -->
 			</div>
 			<!-- /upage -->
 

@@ -16,6 +16,10 @@
         {
          activate_subpage("#natsp"); 
         });
+        $(document).on("click", ".uib_w_5", function(evt)
+        {
+         activate_subpage("#natsp"); 
+        });
 }
  $(document).ready(register_event_handlers);
 })();
