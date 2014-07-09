@@ -44,7 +44,15 @@
 //				intel.xdk.device.launchExternal("http://www.volunteerlogin.org/GLBTNearMe/donate.html");
 				window.open('http://www.volunteerlogin.org/GLBTNearMe/donate.html');
 			};
+			function listformFn() {
+				var params = "zip=95073&miles=15&category=Business";
+				listpagefunc(params);
+			}
 			function nationalFn() {
+				var params = "national=Yes";
+				listpagefunc(params);
+			}
+			function listpagefunc(params) {
 			    var xmlhttp;
 				try {
 				    xmlhttp=new XMLHttpRequest();
@@ -56,14 +64,42 @@
 				    {
 				      if (xmlhttp.readyState==4 && xmlhttp.status==200)
 				      {
-							alert(xmlhttp.responseText);
+//							alert(xmlhttp.responseText);
+							var rList = JSON.parse(xmlhttp.responseText);
+    						var numberList = 	document.getElementById("natlisting");
+						    var i;
+						    for(i = 0; i<rList.length; i++) {
+                    //create new li element
+					            var newNumberListItem = document.createElement("li");
+                    //create new text node
+								var namedist = rList[i].Name;
+								var dist = rList[i].Distance;
+								if (dist > 0)
+									namedist + ' - ' +  ' Miles';
+								var address1 = rList[i].Address1;
+								if (address1.length > 0)
+									namedist += ", " + address1;
+								var address2 = rList[i].Address2;
+								if (address2.length > 0)
+									namedist += " " + address2;
+								var city = rList[i].City;
+								var state = rList[i].State;
+								var zip  = rList[i].Zip;
+								if (city.length > 0)
+									namedist += ", " + city + ', ' + state + ' ' + zip;
+					            var numberListValue = document.createTextNode(namedist);
+                    //add text node to li element
+					            newNumberListItem.appendChild(numberListValue);
+                    //add new list element built in previous steps to unordered list
+                    //called numberList
+					            numberList.appendChild(newNumberListItem);
+						    }
+
+							activate_subpage("#natsp");
 					  }
 					}
 				}
-				var params = "zip=95073&miles=15&category=Business&submit=Search";
-				xmlhttp.open("GET","https://volunteerlogin.org/GLBTNearMe/AppResults.php" + '?' + params, true);
-//				xmlhttp.setRequestHeader("Content-type","application/x-www-form-urlencoded");
-//			    xmlhttp.send(params);
+				xmlhttp.open("GET","https://www.volunteerlogin.org/GLBTNearMe/AppResults.php" + '?' + params, true);
 			    xmlhttp.send(null);
 			};
 		</script>
@@ -74,6 +110,13 @@
 		<script type="application/javascript" src="app_framework/2.1/appframework.js"></script>
 		<script type="application/javascript" src="app_framework/2.1/appframework.ui.js" data-ver="1"></script>
 		<script src="cordova.js"></script>
+		<script type="application/javascript" src="js/jquery.min.js"></script>
+		<script type="application/javascript" src="js/index_user_scripts.js"></script>
+		<script type="application/javascript" src="js/af_subpage.js"></script>
+		<script type="text/javascript">
+			/* Intel native bridge is available */
+			af.feat.nativeTouchScroll = true;
+		</script>
 	</head>
 
 	<body id="afui" style="  background-color: #fff3a1">
@@ -129,12 +172,13 @@
    </select>
   </div>
 						<div id="buttonlist" style="width:50%; float:left;">
-<input class="buttonleft orangeButton" type="submit" name="List" value="List">
+<input class="buttonleft orangeButton" type="button" name="List" value="List" onclick="listformFn()">
 						</div>
 						<div id="buttonmap" style="width:50%;float:right">
 <input class="buttonright orangeButton" type="submit" name="Map" value="Map">
 						</div>
     </div>
+	</form>
 </div>
 						<div> <p></p> </div>
 						<div id="button1" style="width:50%; float:left;">
@@ -143,6 +187,18 @@
 						<div id="button2" style="width:50%;float:right">
 <input class="buttonright purpleButton" type="button" name="Donate" value="Donate Online" onclick="donateFn()">
 						</div>
+					</div>
+
+					<div id="natsp" class="upage-content hidden">
+						<div id="buttonback" style="width:50%; float:left;"><a class="buttonleft widget uib_w_3 orangeButton" data-uib="app_framework/button" data-ver="1" href="#mainpage" data-transition="fade">Back</a>
+						</div>
+						<div id="buttonMap" style="width:50%; float:right;"><a class="buttonright orangeButton">Map</a>
+						</div>
+					<div>
+						<ul id="natlisting" class="none">
+						</ul>
+					</div>
+
 					</div>
 					<!-- /upage-content -->
 

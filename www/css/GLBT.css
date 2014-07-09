@@ -108,4 +108,11 @@ img.displaycenter {
 	color: black;
 }
 
-
+ul.none {
+	list-style-type:none;
+	text-align: center;
+	color: black;
+/*	overflow:scroll;
+	position:absolute;"
+	height: 300px;*/
+}
