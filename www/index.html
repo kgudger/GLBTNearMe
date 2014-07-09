@@ -33,26 +33,90 @@
 		</style>
 		<script src="intelxdk.js"></script>
 		<script type="text/javascript">
+			var _map = null;
+			    var myLatLng;
+			    var currentLatitude = "";
+			    var currentLongitude = "";
+			    var options = {
+			        timeout: 10000,
+			        maximumAge: 11000,
+			        enableHighAccuracy: true
+			    };
 			/* Intel native bridge is available */
 			var onDeviceReady=function(){
-			//hide splash screen
-			intel.xdk.device.hideSplashScreen();
+                if (intel.xdk.geolocation !== null) {
+                intel.xdk.geolocation.watchPosition(suc, fail, options);
+                } else {
+					document.getElementById("geostat").innerHTML="Intel nav not ready";
+                }
+				//hide splash screen
+				intel.xdk.device.hideSplashScreen();
 			};
-			document.addEventListener("intel.xdk.device.ready",onDeviceReady,false);
+            function ready() {
+			    if (navigator.geolocation) {
+//					document.getElementById("geostat").innerHTML="In ready";
+			          navigator.geolocation.getCurrentPosition(showPosition);
+			    } else {
+//					document.getElementById("geostat").innerHTML="Browser nav not ready";
+			    }
+			};
+            function showPosition(position) {
+			    currentLatitude = position.coords.latitude;
+			    currentLongitude = position.coords.longitude;
+//				document.getElementById("geostat").innerHTML="Browser nav ready";
+//			    initialize();
+			};
 
+		if(typeof intel === 'undefined') {
+		    document.addEventListener( "DOMContentLoaded", ready, false );
+		} else {
+			document.addEventListener("intel.xdk.device.ready",onDeviceReady,false);
+		}
+			    //Success callback
+			    var suc = function(p) {
+			        console.log("geolocation success", 4);
+					document.getElementById("geostat").innerHTML="Intel nav success";
+			        //Draws the map initially
+			        if (_map === null) {
+			            currentLatitude = p.coords.latitude;
+			            currentLongitude = p.coords.longitude;
+/*			            initialize();
+			        } else {
+			            myLatLng = new google.maps.LatLng(p.coords.latitude, p.coords.longitude);
+*/			        }
+			    };
+			    
+			    var fail = function() {
+			        console.log("Geolocation failed. \nPlease enable GPS in Settings.", 1);
+			        document.getElementById("geostat").innerHTML="Intel nav fail";
+
+			    };
 			function donateFn() {
 //				intel.xdk.device.launchExternal("http://www.volunteerlogin.org/GLBTNearMe/donate.html");
 				window.open('http://www.volunteerlogin.org/GLBTNearMe/donate.html');
 			};
 			function listformFn() {
-				var params = "zip=95073&miles=15&category=Business";
-				listpagefunc(params);
-			}
+				var zip = document.getElementById('distform').elements["zipcode"].value;
+			    if ( (zip == null || zip == "") &&
+					 (currentLatitude == "") ) {
+			        alert("You must enter a zip code or turn on navigation (GPS).");
+				} else {
+				var miles = document.getElementById('distform').elements["milesdist"].value;
+				var cat = document.getElementById('distform').elements["category"].value;
+				var params = "" ;
+				if ( currentLatitude != "" ) 
+					params = "latitude=" + currentLatitude + "&longitude=" + currentLongitude;
+				else
+					params = "zip=" + zip;
+				params+= "&miles=" + miles + "&category=" + cat ;
+				listpagefunc(params,cat);
+				}
+			};
 			function nationalFn() {
 				var params = "national=Yes";
-				listpagefunc(params);
-			}
-			function listpagefunc(params) {
+				listpagefunc(params,"National");
+			};
+			function listpagefunc(params,natnl) {
 			    var xmlhttp;
 				try {
 				    xmlhttp=new XMLHttpRequest();
@@ -68,32 +132,48 @@
 							var rList = JSON.parse(xmlhttp.responseText);
     						var numberList = 	document.getElementById("natlisting");
 						    var i;
+							var namedist = '<p  class="nlist">' + natnl + '</p>';
 						    for(i = 0; i<rList.length; i++) {
                     //create new li element
-					            var newNumberListItem = document.createElement("li");
+//					            var newNumberListItem = document.createElement("li");
                     //create new text node
-								var namedist = rList[i].Name;
+								namedist += "<br>" + rList[i].Name;
 								var dist = rList[i].Distance;
 								if (dist > 0)
-									namedist + ' - ' +  ' Miles';
+									namedist += ' - ' + dist + ' Miles';
 								var address1 = rList[i].Address1;
 								if (address1.length > 0)
-									namedist += ", " + address1;
+									namedist += "<br>" + address1;
 								var address2 = rList[i].Address2;
 								if (address2.length > 0)
-									namedist += " " + address2;
+									namedist += "<br>" + address2;
 								var city = rList[i].City;
 								var state = rList[i].State;
 								var zip  = rList[i].Zip;
 								if (city.length > 0)
-									namedist += ", " + city + ', ' + state + ' ' + zip;
-					            var numberListValue = document.createTextNode(namedist);
-                    //add text node to li element
-					            newNumberListItem.appendChild(numberListValue);
-                    //add new list element built in previous steps to unordered list
-                    //called numberList
-					            numberList.appendChild(newNumberListItem);
+									namedist += "<br>" + city + ', ' + state + ' ' + zip;
+								var phone = rList[i].Phone;
+								if (phone.length > 0)
+									namedist += "<br>Phone: " + phone;
+								var hotline = rList[i].Hotline;
+								if (hotline.length > 0) {
+									var c = hotline.substr(0,1);
+									if (c >= '0' && c <= '9') {
+										namedist += "<br>Hotline: " + hotline;
+									}
+								}
+								var internet = rList[i].Internet;
+								if (internet.length > 0)
+									namedist += "<br>Email: " + internet;
+								var web = rList[i].Web;
+								if (web.length > 0)
+									namedist += '<br>Web: <a href="' + web + '">' + web + '</a>';
+/*								var subcat = rList[i].sub-cat;
+								if (subcat.length > 0)
+									namedist += "<br>Sub-category: " + subcat; // can't use sub-cat */
+								namedist += "<br>";
 						    }
+							numberList.innerHTML=namedist;
 
 							activate_subpage("#natsp");
 					  }
@@ -110,6 +190,9 @@
 		<script type="application/javascript" src="app_framework/2.1/appframework.js"></script>
 		<script type="application/javascript" src="app_framework/2.1/appframework.ui.js" data-ver="1"></script>
 		<script src="cordova.js"></script>
+		<script src="xhr.js"></script>
+		<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
+
 		<script type="application/javascript" src="js/jquery.min.js"></script>
 		<script type="application/javascript" src="js/index_user_scripts.js"></script>
 		<script type="application/javascript" src="js/af_subpage.js"></script>
@@ -133,11 +216,11 @@
 							<p class="begin-txt">Find 15000<br>gay, lesbian, bisexual, transgender<br>resources at your finger tips!</p>
 						</div>
 						<div class="second-div">
-						<form>
+						<form id="distform">
     						<img id="purpleFormBackground" class="displaycenter" src="images/index_1-7.png" border="0" />
     						<div id="purpleFormContents" style=""> 
-       Or Enter Zip Code<input class="purpletext" type="text" maxlength="9" size="15"/><br />
-       Enter Miles<input class="purpletext" type="text" maxlength="4" size="15"/><br /><p>Select a Category</p>
+       Enter Zip Code<input class="purpletext" type="text" maxlength="9" size="15" name="zipcode"/><br />
+       Enter Miles<input class="purpletext" type="text" maxlength="4" size="15" name="milesdist"/><br /><p>Select a Category</p>
 <div id="purpleboxCategory">
  
    <select name="category" size="1" tabindex="3">
@@ -187,16 +270,17 @@
 						<div id="button2" style="width:50%;float:right">
 <input class="buttonright purpleButton" type="button" name="Donate" value="Donate Online" onclick="donateFn()">
 						</div>
+						<div id="geostat"> <p>Default</p> </div>
 					</div>
 
 					<div id="natsp" class="upage-content hidden">
-						<div id="buttonback" style="width:50%; float:left;"><a class="buttonleft widget uib_w_3 orangeButton" data-uib="app_framework/button" data-ver="1" href="#mainpage" data-transition="fade">Back</a>
+						<div><div id="buttonback" style="width:50%; float:left;"><a class="buttonleft widget uib_w_3 orangeButton" data-uib="app_framework/button" data-ver="1" href="#mainpage" data-transition="fade">Back</a>
 						</div>
 						<div id="buttonMap" style="width:50%; float:right;"><a class="buttonright orangeButton">Map</a>
-						</div>
-					<div>
-						<ul id="natlisting" class="none">
-						</ul>
+						</div></div>
+					<div id="natlisting" style="lstyle">
+<!--						<ul id="natlisting" class="none">
+						</ul> -->
 					</div>
 
 					</div>

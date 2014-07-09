@@ -116,3 +116,19 @@ ul.none {
 	position:absolute;"
 	height: 300px;*/
 }
+#natlisting {
+/*    display: block;
+    margin-left: auto;
+    margin-right: auto;*/
+	text-align: left;
+	color: black;
+  font-size: 12px !important;
+  line-height:100% !important;
+}
+p.nlist {
+	background-color: purple;
+	color: white !important;
+	margin: 0px, 0px !important;
+	padding: 5px !important;
+  font-size: 16px !important;
+}
