@@ -38,6 +38,7 @@
                 intel.xdk.geolocation.watchPosition(suc, fail, options);
                 } else {
 //					document.getElementById("geostat").innerHTML="Intel nav not ready";
+					initialize();
                 }
 				//hide splash screen
 				intel.xdk.device.hideSplashScreen();
@@ -54,7 +55,7 @@
 			    currentLatitude = position.coords.latitude;
 			    currentLongitude = position.coords.longitude;
 //				document.getElementById("geostat").innerHTML="Browser nav ready";
-//			    initialize();
+			    initialize();
 			};
 
 		if(typeof intel === 'undefined') {
@@ -70,10 +71,10 @@
 			        if (_map === null) {
 			            currentLatitude = p.coords.latitude;
 			            currentLongitude = p.coords.longitude;
-/*			            initialize();
+			            initialize();
 			        } else {
 			            myLatLng = new google.maps.LatLng(p.coords.latitude, p.coords.longitude);
-*/			        }
+			        }
 			    };
 			    
 			    var fail = function() {
@@ -85,22 +86,36 @@
 //				intel.xdk.device.launchExternal("http://www.volunteerlogin.org/GLBTNearMe/donate.html");
 				window.open('http://www.volunteerlogin.org/GLBTNearMe/donate.html');
 			};
-			function listformFn() {
+			function mapformredirect() {
+				window.location.hash = "map_canvas";
+			};
+			function backtostart() {
+				window.location.hash = "mainsub";
+			};
+
+			function getinitparams() {
 				var zip = document.getElementById('distform').elements["zipcode"].value;
+				var params = "" ;
 			    if ( (zip == null || zip == "") &&
 					 (currentLatitude == "") ) {
 			        alert("You must enter a zip code or turn on navigation (GPS).");
 				} else {
-				var miles = document.getElementById('distform').elements["milesdist"].value;
-				var cat = document.getElementById('distform').elements["category"].value;
-				var params = "" ;
-				if ( currentLatitude != "" ) 
-					params = "latitude=" + currentLatitude + "&longitude=" + currentLongitude;
-				else
-					params = "zip=" + zip;
-				params+= "&miles=" + miles + "&category=" + cat ;
-				listpagefunc(params,cat);
+					var miles = document.getElementById('distform').elements["milesdist"].value;
+					if ( currentLatitude != "" ) 
+						params = "latitude=" + currentLatitude + "&longitude=" + currentLongitude;
+					else
+						params = "zip=" + zip;
+					if ((miles.length > 0) && (miles > 0))
+						params+= "&miles=" + miles;
 				}
+				return params;
+			};
+
+			function listformFn() {
+				var params = getinitparams();
+				var cat = document.getElementById('distform').elements["category"].value;
+				params += "&category=" + encodeURI(cat);
+				listpagefunc(params,cat);
 			};
 			function nationalFn() {
 				var params = "national=Yes";
@@ -184,12 +199,57 @@
 		<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
 
 		<script type="application/javascript" src="js/jquery.min.js"></script>
+		<script type="text/javascript"
+			 src="ui/min/jquery.ui.map.full.min.js">
+		</script>
 		<script type="application/javascript" src="js/index_user_scripts.js"></script>
 		<script type="application/javascript" src="js/af_subpage.js"></script>
 		<script type="text/javascript">
 			/* Intel native bridge is available */
 			af.feat.nativeTouchScroll = true;
+			af.ui.ready(
+			    function(){
+			    //do something
+//					alert("ui ready");
+/*					if(typeof intel === 'undefined') {
+					    ready();
+					} else {
+						onDeviceReady();
+					}*/
+				}
+			);
 		</script>
+<style>
+    #map_canvas {
+        width:  100%;
+        height: 380px;
+    }
+</style>
+<script>
+    function initialize() {
+        var mapCanvas = document.getElementById('map_canvas');
+		var latlng = new google.maps.LatLng(currentLatitude, currentLongitude);
+        var mapOptions = {
+            center: latlng,
+	        zoomControl: true,
+	        zoomControlOptions: {
+	            style: google.maps.ZoomControlStyle.SMALL,
+//	            position: google.maps.ControlPosition.LEFT_TOP
+	        },
+            zoom: 12,
+            mapTypeId: google.maps.MapTypeId.ROADMAP
+        };
+        _map = new google.maps.Map(mapCanvas, mapOptions);
+//		setTimeout("$('#map_canvas').gmap('refresh')",500);
+		var marker = new google.maps.Marker({
+			position: latlng,
+			map: _map,
+			title: 'Current Position',
+			zIndex: 1000
+		});
+		marker.setMap(_map);
+    };
+</script>
 	</head>
 
 	<body id="afui" style="  background-color: #fff3a1">
@@ -204,14 +264,14 @@
 					<div class="upage-content" id="mainsub">
 						<div class="begin-div">
 							<p class="begin-txt">Find 15000<br>gay, lesbian, bisexual, transgender<br>resources at your finger tips!</p>
-						</div>
+						</div> <!-- begin-div -->
 						<div class="second-div">
 						<form id="distform">
     						<img id="purpleFormBackground" class="displaycenter" src="images/index_1-7.png" border="0" />
     						<div id="purpleFormContents" style=""> 
        Enter Zip Code<input class="purpletext" type="text" maxlength="9" size="15" name="zipcode"/><br />
        Enter Miles<input class="purpletext" type="text" maxlength="4" size="15" name="milesdist"/><br /><p>Select a Category</p>
-<div id="purpleboxCategory">
+								<div id="purpleboxCategory">
  
    <select name="category" size="1" tabindex="3">
      <option selected value="All Categories">All Categories</option>
@@ -243,36 +303,45 @@
 		<option value="Transgender">Transgender</option>
 		<option value="Youth">Youth</option>
    </select>
-  </div>
-						<div id="buttonlist" style="width:50%; float:left;">
+								</div> <!-- purpleboxCategory -->
+								<div id="buttonlist" style="width:50%; float:left;">
 <input class="buttonleft orangeButton" type="button" name="List" value="List" onclick="listformFn()">
-						</div>
-						<div id="buttonmap" style="width:50%;float:right">
-<input class="buttonright orangeButton" type="button" name="Map" value="Map" onclick="listformFn()">
-						</div>
-    </div>
+								</div> <!-- buttonlist -->
+								<div id="buttonmap" style="width:50%;float:right">
+<input class="buttonright orangeButton" type="button" name="Map" value="Map" onclick="mapformredirect()">
+								</div> <!-- buttonmap -->
+    						</div> <!-- purpleFormContents -->
 	</form>
-</div>
-						<div> <p></p> </div>
+						</div> <!-- second-div -->
+						<div> <p></p> </div> <!-- spacer -->
 						<div id="button1" style="width:50%; float:left;">
 <input id="NationalButton" class="buttonleft purpleButton" type="button" name="National" value="National Listings" onclick="nationalFn()">
-						</div>
+						</div> <!-- button1 -->
 						<div id="button2" style="width:50%;float:right">
 <input class="buttonright purpleButton" type="button" name="Donate" value="Donate Online" onclick="donateFn()">
+						</div> <!-- button2 -->
+						<div id="geostat" style="width:100%;height:100px"> <p></p> 
+						</div> <!-- geostat -->
+						<div style="width:100%;" id="map_cont">
+						<br>
+							<div id="map_canvas" >
+							</div>
+						</div> <!-- map_cont -->
+						<div id="buttonback"><input class="buttonright orangeButton" type="button" name="BacktoStart" value="Back" onclick="backtostart()">
 						</div>
-						<div id="geostat"> <p></p> </div>
-					</div>
+					</div> <!-- mainsub -->
 
 					<div id="natsp" class="upage-content hidden">
-						<div><div id="buttonback" style="width:50%; float:left;"><a class="buttonleft widget uib_w_3 orangeButton" data-uib="app_framework/button" data-ver="1" href="#mainpage" data-transition="fade">Back</a>
+						<div>
+							<div id="buttonback" style="width:50%; float:left;"><a class="buttonleft widget uib_w_3 orangeButton" data-uib="app_framework/button" data-ver="1" href="#mainpage" data-transition="fade">Back</a>
+							</div>
+							<div id="buttonMap" style="width:50%; float:right;"><a class="buttonright widget uib_w_6 orangeButton" data-uib="app_framework/button" data-ver="1" href="#mapmainpage" data-transition="fade">Map</a>
+							</div>
 						</div>
-						<div id="buttonMap" style="width:50%; float:right;"><a class="buttonright widget uib_w_6 orangeButton" data-uib="app_framework/button" data-ver="1" href="#mapmainpage" data-transition="fade">Map</a>
-						</div></div>
-					<div id="natlisting" style="lstyle">
+						<div id="natlisting" style="lstyle">
 <!--						<ul id="natlisting" class="none">
-						</ul> -->
-					</div>
-
+							</ul> -->
+						</div>
 					</div>
 					<!-- /upage-content -->
 
@@ -294,8 +363,11 @@
 					</header>
 					<div id="mapmainpagesub" class="upage-content ">
 
-						<div id="buttonback" style="float:left;"><a class="buttonleft widget uib_w_4 orangeButton" data-uib="app_framework/button" data-ver="1" href="#mainpage" data-transition="fade">Back</a>
+						<div id="buttonback" style="width:100%;    margin-left: auto;
+    margin-right: auto;
+"><a class="buttoncenter widget uib_w_4 orangeButton" data-uib="app_framework/button" data-ver="1" href="#mainpage" data-transition="fade">Back</a>
 						</div> <!-- buttonback -->
+						<br>
 					</div> <!-- mapmainpagesub" upage-content -->
 					<footer class="inner-element uib_w_2 footer-txt" data-uib="app_framework/footer" data-ver="1" id="af-footer-1">
 						<p>If you need support or
