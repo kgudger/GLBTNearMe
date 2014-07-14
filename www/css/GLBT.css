@@ -18,6 +18,7 @@
 }
 .begin-div {
   width:100%;
+	text-align:center;
 }
 .second-div {
   width:100%;
@@ -89,8 +90,8 @@ img.displaycenter {
 
 #purpleFormContents {
     position: absolute;
-    left: 40%;
-	right: 40%;
+    left: 30%;
+	right: 30%;
 	top: 20%;
 	text-align: center;
 	color: white;

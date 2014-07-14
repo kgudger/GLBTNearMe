@@ -24,14 +24,16 @@
 		<script src="intelxdk.js"></script>
 		<script type="text/javascript">
 			var _map = null;
-			    var myLatLng;
-			    var currentLatitude = "";
-			    var currentLongitude = "";
-			    var options = {
-			        timeout: 10000,
-			        maximumAge: 11000,
-			        enableHighAccuracy: true
-			    };
+			var myLatLng;
+			var currentLatitude = "";
+			var currentLongitude = "";
+			var options = {
+			    timeout: 10000,
+			    maximumAge: 11000,
+			    enableHighAccuracy: true
+			};
+		    var infoWindow;
+			var returnedList; // returned JSON list from GET
 			/* Intel native bridge is available */
 			var onDeviceReady=function(){
                 if (intel.xdk.geolocation !== null) {
@@ -86,9 +88,6 @@
 //				intel.xdk.device.launchExternal("http://www.volunteerlogin.org/GLBTNearMe/donate.html");
 				window.open('http://www.volunteerlogin.org/GLBTNearMe/donate.html');
 			};
-			function mapformredirect() {
-				window.location.hash = "map_canvas";
-			};
 			function backtostart() {
 				window.location.hash = "mainsub";
 			};
@@ -111,17 +110,30 @@
 				return params;
 			};
 
-			function listformFn() {
+			var cat = "" ;
+
+			function mapformredirect() {
+				var params = startlist();
+				listpagefunc(params,cat,false);
+				window.location.hash = "map_canvas";
+			};
+
+			function startlist() {
 				var params = getinitparams();
-				var cat = document.getElementById('distform').elements["category"].value;
+				cat = document.getElementById('distform').elements["category"].value;
 				params += "&category=" + encodeURI(cat);
-				listpagefunc(params,cat);
+				return params;
+			}
+
+			function listformFn() {
+				var params = startlist() ;
+				listpagefunc(params,cat,true);
 			};
 			function nationalFn() {
 				var params = "national=Yes";
-				listpagefunc(params,"National");
+				listpagefunc(params,"National",true);
 			};
-			function listpagefunc(params,natnl) {
+			function listpagefunc(params,natnl,makelist) {
 			    var xmlhttp;
 				try {
 				    xmlhttp=new XMLHttpRequest();
@@ -132,61 +144,107 @@
 				    xmlhttp.onreadystatechange=function()
 				    {
 				      if (xmlhttp.readyState==4 && xmlhttp.status==200)
-				      {
+				    	{
 //							alert(xmlhttp.responseText);
-							var rList = JSON.parse(xmlhttp.responseText);
-    						var numberList = 	document.getElementById("natlisting");
-						    var i;
-							var namedist = '<p  class="nlist">' + natnl + '</p>';
-						    for(i = 0; i<rList.length; i++) {
-                    //create new li element
-//					            var newNumberListItem = document.createElement("li");
-                    //create new text node
-								namedist += "<br>" + rList[i].Name;
-								var dist = rList[i].Distance;
-								if (dist > 0)
-									namedist += ' - ' + dist + ' Miles';
-								var address1 = rList[i].Address1;
-								if (address1.length > 0)
-									namedist += "<br>" + address1;
-								var address2 = rList[i].Address2;
-								if (address2.length > 0)
-									namedist += "<br>" + address2;
-								var city = rList[i].City;
-								var state = rList[i].State;
-								var zip  = rList[i].Zip;
-								if (city.length > 0)
-									namedist += "<br>" + city + ', ' + state + ' ' + zip;
-								var phone = rList[i].Phone;
-								if (phone.length > 0)
-									namedist += "<br>Phone: " + phone;
-								var hotline = rList[i].Hotline;
-								if (hotline.length > 0) {
-									var c = hotline.substr(0,1);
-									if (c >= '0' && c <= '9') {
-										namedist += "<br>Hotline: " + hotline;
-									}
-								}
-								var internet = rList[i].Internet;
-								if (internet.length > 0)
-									namedist += "<br>Email: " + internet;
-								var web = rList[i].Web;
-								if (web.length > 0)
-									namedist += '<br>Web: <a href="' + web + '">' + web + '</a>';
-/*								var subcat = rList[i].sub-cat;
-								if (subcat.length > 0)
-									namedist += "<br>Sub-category: " + subcat; // can't use sub-cat */
-								namedist += "<br>";
-						    }
-							numberList.innerHTML=namedist;
-
-							activate_subpage("#natsp");
-					  }
+							returnedList = JSON.parse(xmlhttp.responseText);
+							if (makelist)
+								formatlist(params,natnl);
+							else
+								formatmap(params,natnl);
+						}
 					}
+					xmlhttp.open("GET","https://www.volunteerlogin.org/GLBTNearMe/AppResults.php" + '?' + params, true);
+				    xmlhttp.send(null);
 				}
-				xmlhttp.open("GET","https://www.volunteerlogin.org/GLBTNearMe/AppResults.php" + '?' + params, true);
-			    xmlhttp.send(null);
+			}; // listpagefunc
+
+			function formatmap(params,natnl) {
+			    var i;
+		        var bounds = new google.maps.LatLngBounds();
+				var latlng = new google.maps.LatLng(currentLatitude, currentLongitude);
+				var marker = new google.maps.Marker({
+					position: latlng,
+					map: _map,
+					title: 'Current Position'/*,
+					zIndex: 1000*/
+				});
+				marker.setMap(_map);
+				bounds.extend(latlng);
+			    for(i = 0; i<returnedList.length; i++) {
+					var latitude = returnedList[i].latitude;
+					var longitude = returnedList[i].longitude;
+					var latlng = new google.maps.LatLng(latitude, longitude);
+					var pname = returnedList[i].Name;
+					var c = "A";
+					var iconchar = "Google Maps Markers/purple_Marker" + String.fromCharCode(c.charCodeAt(0) + i%26) + ".png";
+					var marker = new google.maps.Marker({
+						position: latlng,
+						map: _map,
+						title: pname,
+						icon: iconchar/*,
+						zIndex: 1000*/
+					});
+					marker.setMap(_map);
+					bounds.extend(latlng);
+		            google.maps.event.addListener(marker, 'click', function() {
+			            infoWindow.close();
+        		        infoWindow.setContent(pname);
+        		        infoWindow.open(_map, marker);
+        	        });
+				}
+				if ( i > 0 ) // there were some markers added
+			        _map.fitBounds(bounds);
+/*				var atext = "i is " + i ;
+				alert(atext);
+				document.getElementById("geostat").innerHTML=i;*/
 			};
+
+			function formatlist(params, natnl) {
+				var numberList = 	document.getElementById("natlisting");
+			    var i;
+				var namedist = '<p class="nlist">' + natnl + '</p>';
+			    for(i = 0; i<returnedList.length; i++) {
+                //create new text node
+					namedist += "<br>" + returnedList[i].Name;
+					var dist = returnedList[i].Distance;
+					if (dist > 0)
+						namedist += ' - ' + dist + ' Miles';
+					var address1 = returnedList[i].Address1;
+					if (address1.length > 0)
+						namedist += "<br>" + address1;
+					var address2 = returnedList[i].Address2;
+					if (address2.length > 0)
+						namedist += "<br>" + address2;
+					var city = returnedList[i].City;
+					var state = returnedList[i].State;
+					var zip  = returnedList[i].Zip;
+					if (city.length > 0)
+						namedist += "<br>" + city + ', ' + state + ' ' + zip;
+					var phone = returnedList[i].Phone;
+					if (phone.length > 0)
+						namedist += "<br>Phone: " + phone;
+					var hotline = returnedList[i].Hotline;
+					if (hotline.length > 0) {
+						var c = hotline.substr(0,1);
+						if (c >= '0' && c <= '9') {
+							namedist += "<br>Hotline: " + hotline;
+						}
+					}
+					var internet = returnedList[i].Internet;
+					if (internet.length > 0)
+						namedist += "<br>Email: " + internet;
+					var web = returnedList[i].Web;
+					if (web.length > 0)
+						namedist += '<br>Web: <a href="' + web + '">' + web + '</a>';
+/*					var subcat = returnedList[i].sub-cat;
+					if (subcat.length > 0)
+						namedist += "<br>Sub-category: " + subcat; // can't use sub-cat */
+					namedist += "<br>";
+			    }
+				numberList.innerHTML=namedist;
+				activate_subpage("#natsp");
+		  };
+
 		</script>
 		<!--   
    You may substitute jQuery for the App Framework selector library.
@@ -240,14 +298,8 @@
             mapTypeId: google.maps.MapTypeId.ROADMAP
         };
         _map = new google.maps.Map(mapCanvas, mapOptions);
+		infoWindow = new google.maps.InfoWindow();
 //		setTimeout("$('#map_canvas').gmap('refresh')",500);
-		var marker = new google.maps.Marker({
-			position: latlng,
-			map: _map,
-			title: 'Current Position',
-			zIndex: 1000
-		});
-		marker.setMap(_map);
     };
 </script>
 	</head>
@@ -259,12 +311,14 @@
 			<div class="upage panel" id="mainpage" data-header="af-header-0" data-footer="af-footer-0">
 				<div class="upage-outer">
 					<header class="container-group inner-element uib_w_1 header-img" data-uib="app_framework/header" data-ver="1" id="af-header-0">
-						<img class="displaycenter" src="images/glbtnearmelogo.png">
-					</header>
-					<div class="upage-content" id="mainsub">
+						<table style="width:100%"> <tr><td>
+						<img class="displaycenter" src="images/glbtnearmelogo.png"></td></tr><tr><td>
 						<div class="begin-div">
 							<p class="begin-txt">Find 15000<br>gay, lesbian, bisexual, transgender<br>resources at your finger tips!</p>
 						</div> <!-- begin-div -->
+						</td></tr></table>
+					</header>
+					<div class="upage-content" id="mainsub">
 						<div class="second-div">
 						<form id="distform">
     						<img id="purpleFormBackground" class="displaycenter" src="images/index_1-7.png" border="0" />
