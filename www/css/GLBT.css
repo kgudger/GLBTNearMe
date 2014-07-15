@@ -132,6 +132,14 @@ ul.none {
   font-size: 12px !important;
   line-height:100% !important;
 }
+
+.lstyle {
+	text-align: left;
+	color: black;
+  font-size: 12px !important;
+  line-height:100% !important;
+}
+
 p.nlist {
 	background-color: purple;
 	color: white !important;
