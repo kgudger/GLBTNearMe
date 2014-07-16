@@ -22,6 +22,7 @@
 			input, textarea  { -webkit-user-select:text; }
 		</style>
 		<script src="intelxdk.js"></script>
+		<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
 		<script type="text/javascript">
 			var _map = null;
 			var myLatLng;
@@ -32,7 +33,7 @@
 			    maximumAge: 11000,
 			    enableHighAccuracy: true
 			};
-		    var infoWindow;
+			var markers = []; // markers array to clear
 			var returnedList; // returned JSON list from GET
 			/* Intel native bridge is available */
 			var onDeviceReady=function(){
@@ -162,6 +163,7 @@
 			    var i;
 		        var bounds = new google.maps.LatLngBounds();
 				var latlng = new google.maps.LatLng(currentLatitude, currentLongitude);
+				deleteMarkers(); // hopefully removes all markers
 				var marker = new google.maps.Marker({
 					position: latlng,
 					map: _map,
@@ -170,28 +172,8 @@
 				});
 				marker.setMap(_map);
 				bounds.extend(latlng);
-			    for(i = 0; i<returnedList.length; i++) {
-					var latitude = returnedList[i].latitude;
-					var longitude = returnedList[i].longitude;
-					var latlng = new google.maps.LatLng(latitude, longitude);
-					var pname = returnedList[i].Name;
-					var c = "A";
-					var iconchar = "Google Maps Markers/purple_Marker" + String.fromCharCode(c.charCodeAt(0) + i%26) + ".png";
-					var marker = new google.maps.Marker({
-						position: latlng,
-						map: _map,
-						title: pname,
-						icon: iconchar/*,
-						zIndex: 1000*/
-					});
-					marker.setMap(_map);
-					bounds.extend(latlng);
-		            google.maps.event.addListener(marker, 'click', function() {
-			            infoWindow.close();
-        		        infoWindow.setContent(pname);
-        		        infoWindow.open(_map, marker);
-        	        });
-				}
+			    for(i = 0; i<returnedList.length; i++) 
+					createMarker(i,bounds);
 				if ( i > 0 ) // there were some markers added
 			        _map.fitBounds(bounds);
 /*				var atext = "i is " + i ;
@@ -199,52 +181,103 @@
 				document.getElementById("geostat").innerHTML=i;*/
 			};
 
+
+			function createMarker(i,bounds) {
+				var latitude = returnedList[i].latitude;
+				var longitude = returnedList[i].longitude;
+				var latlng = new google.maps.LatLng(latitude, longitude);
+				var pname = returnedList[i].Name;
+				var c = "A";
+				var iconchar = "Google Maps Markers/purple_Marker" + String.fromCharCode(c.charCodeAt(0) + i%26) + ".png";
+				var marker = new google.maps.Marker({
+					position: latlng,
+					map: _map,
+					title: pname,
+					icon: iconchar/*,
+						zIndex: 1000*/
+				});
+				marker.setMap(_map);
+				markers.push(marker); // array of all known markers
+
+				bounds.extend(latlng);
+			    var infoWindow = new google.maps.InfoWindow();
+				pname = '<div style="color: black;">' +listhtml(i) + '</div>';
+		        google.maps.event.addListener(marker, 'click', function() {
+		            infoWindow.close();
+       		        infoWindow.setContent(pname);
+/*			        infoWindow.setOptions({
+			            content: pname
+       				});*/
+       		        infoWindow.open(_map, marker);
+       	        });
+			}; // createMarker end
+
+	// Sets the map on all markers in the array.
+	function setAllMap(map) {
+	  for (var i = 0; i < markers.length; i++) {
+	    markers[i].setMap(map);
+	  }
+	};
+
+// Removes the markers from the map, but keeps them in the array.
+	function clearMarkers() {
+	  setAllMap(null);
+	};
+// Deletes all markers in the array by removing references to them.
+	function deleteMarkers() {
+	  clearMarkers();
+	  markers = [];
+	};
+
 			function formatlist(params, natnl) {
 				var numberList = 	document.getElementById("natlisting");
 			    var i;
-				var namedist = '<p class="nlist">' + natnl + '</p>';
+				var namedist = '<p class="nlist">' + natnl + '</p>	<br>';
 			    for(i = 0; i<returnedList.length; i++) {
                 //create new text node
-					namedist += "<br>" + returnedList[i].Name;
-					var dist = returnedList[i].Distance;
-					if (dist > 0)
-						namedist += ' - ' + dist + ' Miles';
-					var address1 = returnedList[i].Address1;
-					if (address1.length > 0)
-						namedist += "<br>" + address1;
-					var address2 = returnedList[i].Address2;
-					if (address2.length > 0)
-						namedist += "<br>" + address2;
-					var city = returnedList[i].City;
-					var state = returnedList[i].State;
-					var zip  = returnedList[i].Zip;
-					if (city.length > 0)
-						namedist += "<br>" + city + ', ' + state + ' ' + zip;
-					var phone = returnedList[i].Phone;
-					if (phone.length > 0)
-						namedist += "<br>Phone: " + phone;
-					var hotline = returnedList[i].Hotline;
-					if (hotline.length > 0) {
-						var c = hotline.substr(0,1);
-						if (c >= '0' && c <= '9') {
-							namedist += "<br>Hotline: " + hotline;
-						}
-					}
-					var internet = returnedList[i].Internet;
-					if (internet.length > 0)
-						namedist += "<br>Email: " + internet;
-					var web = returnedList[i].Web;
-					if (web.length > 0)
-						namedist += '<br>Web: <a href="' + web + '">' + web + '</a>';
-/*					var subcat = returnedList[i].sub-cat;
-					if (subcat.length > 0)
-						namedist += "<br>Sub-category: " + subcat; // can't use sub-cat */
-					namedist += "<br>";
+					namedist += listhtml(i);
+					namedist += "<br><br>";
 			    }
 				numberList.innerHTML=namedist;
 				activate_subpage("#natsp");
 		  };
-
+		function listhtml(i) {
+			var namedist = returnedList[i].Name;
+			var dist = returnedList[i].Distance;
+			if (dist > 0)
+				namedist += ' - ' + dist + ' Miles';
+			var address1 = returnedList[i].Address1;
+			if (address1.length > 0)
+				namedist += "<br>" + address1;
+			var address2 = returnedList[i].Address2;
+			if (address2.length > 0)
+				namedist += "<br>" + address2;
+			var city = returnedList[i].City;
+			var state = returnedList[i].State;
+			var zip  = returnedList[i].Zip;
+			if (city.length > 0)
+						namedist += "<br>" + city + ', ' + state + ' ' + zip;
+			var phone = returnedList[i].Phone;
+			if (phone.length > 0)
+				namedist += "<br>Phone: " + phone;
+			var hotline = returnedList[i].Hotline;
+			if (hotline.length > 0) {
+				var c = hotline.substr(0,1);
+				if (c >= '0' && c <= '9') {
+					namedist += "<br>Hotline: " + hotline;
+				}
+			}
+			var internet = returnedList[i].Internet;
+			if (internet.length > 0)
+				namedist += "<br>Email: " + internet;
+			var web = returnedList[i].Web;
+			if (web.length > 0)
+				namedist += '<br>Web: <a href="' + web + '">' + web + '</a>';
+/*			var subcat = returnedList[i].sub-cat;
+			if (subcat.length > 0)
+				namedist += "<br>Sub-category: " + subcat; // can't use sub-cat */
+			return namedist ;
+		};
 		</script>
 		<!--   
    You may substitute jQuery for the App Framework selector library.
@@ -254,7 +287,6 @@
 		<script type="application/javascript" src="app_framework/2.1/appframework.ui.js" data-ver="1"></script>
 		<script src="cordova.js"></script>
 		<script src="xhr.js"></script>
-		<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
 
 		<script type="application/javascript" src="js/jquery.min.js"></script>
 		<script type="text/javascript"
@@ -298,7 +330,6 @@
             mapTypeId: google.maps.MapTypeId.ROADMAP
         };
         _map = new google.maps.Map(mapCanvas, mapOptions);
-		infoWindow = new google.maps.InfoWindow();
 //		setTimeout("$('#map_canvas').gmap('refresh')",500);
     };
 </script>
@@ -311,7 +342,7 @@
 			<div class="upage panel" id="mainpage" data-header="af-header-0" data-footer="af-footer-0">
 				<div class="upage-outer">
 					<header class="container-group inner-element uib_w_1 header-img" data-uib="app_framework/header" data-ver="1" id="af-header-0">
-						<table> <tr><td>
+						<table style="width:100%"> <tr><td>
 						<img class="displaycenter" src="images/glbtnearmelogo.png"></td></tr><tr><td>
 						<div class="begin-div">
 							<p class="begin-txt">Find 15000<br>gay, lesbian, bisexual, transgender<br>resources at your finger tips!</p>
@@ -389,10 +420,10 @@
 						<div>
 							<div id="buttonback" style="width:50%; float:left;"><a class="buttonleft widget uib_w_3 orangeButton" data-uib="app_framework/button" data-ver="1" href="#mainpage" data-transition="fade">Back</a>
 							</div>
-							<div id="buttonMap" style="width:50%; float:right;"><a class="buttonright widget uib_w_6 orangeButton" data-uib="app_framework/button" data-ver="1" href="#mapmainpage" data-transition="fade">Map</a>
-							</div>
-						</div>
-						<div id="natlisting" style="lstyle">
+							<div id="buttonMap" style="width:50%; float:right;"><!--<a class="buttonright widget uib_w_6 orangeButton" data-uib="app_framework/button" data-ver="1" href="#mapmainpage" data-transition="fade">Map</a> --><br>
+							</div><br>
+						</div><br>
+						<div id="natlisting">
 <!--						<ul id="natlisting" class="none">
 							</ul> -->
 						</div>
