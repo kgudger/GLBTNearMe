@@ -317,10 +317,15 @@
 	 *	@param natnl is category
 	 */
 	function formatlist(params, natnl) {
-		var numberList = 	document.getElementById("natlisting");
+		var numberList = document.getElementById("natlisting");
 	    var i;
-		var namedist = '<p class="nlist">' + natnl + '</p>	<br>';
+		var oldcat = "" ;
+		var namedist = "" ;
 	    for(i = 0; i<returnedList.length; i++) {
+			if ( oldcat != returnedList[i].Type ) {
+				oldcat = returnedList[i].Type ;
+				namedist+= '<p class="nlist">' + oldcat + '</p>';
+			}
             //create new text node
 			namedist += listhtml(i);
 			namedist += "<br><br>";
