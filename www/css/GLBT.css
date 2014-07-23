@@ -4,6 +4,7 @@
   font-size: 12px !important;
   line-height:90% !important;
   text-align:center;
+  border:solid 1px #fff3a1 !important;
 }
 .footer-size {
   background-attachment: no-scroll;
@@ -92,7 +93,8 @@ img.displaycenter {
     position: absolute;
     left: 30%;
 	right: 30%;
-	top: 20%;
+	top: 15%;
+	line-height:120% !important;
 	text-align: center;
 	color: white;
 }
