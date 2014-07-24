@@ -91,8 +91,8 @@ img.displaycenter {
 
 #purpleFormContents {
     position: absolute;
-    left: 30%;
-	right: 30%;
+    left: 32%;
+	right: 32%;
 	top: 15%;
 	line-height:120% !important;
 	text-align: center;
@@ -115,6 +115,7 @@ img.displaycenter {
 	height: 40px;
 	text-align: left;
 	color: black;
+	-webkit
 }
 
 ul.none {

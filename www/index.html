@@ -35,6 +35,7 @@
 	var markers = []; // markers array to clear
 	var returnedList; // returned JSON list from GET
 	var cat = "" ;		// category from form
+	var infoWindow;		// holder for all infoWindows
 
 	/* Intel native bridge is available */
 	/** 
@@ -76,6 +77,9 @@
 	    document.addEventListener( "DOMContentLoaded", ready, false );
 	} else {
 		document.addEventListener("intel.xdk.device.ready",onDeviceReady,false);
+	//lock in "portrait" orientation 
+		intel.xdk.device.setRotateOrientation("portrait");
+        intel.xdk.device.setAutoRotate(false);
 	}
     //Success callback
 	/**
@@ -278,7 +282,7 @@
 						// this is so we can call them all and
 						// delete them when doing a new search
 		bounds.extend(latlng);
-	    var infoWindow = new google.maps.InfoWindow();
+	    infoWindow = new google.maps.InfoWindow();
 		pname = '<div style="color: black;">' +listhtml(i) + '</div>';
         google.maps.event.addListener(marker, 'click', function() {
             infoWindow.close();
