@@ -1,29 +1,13 @@
-<!DOCTYPE html>
-<!--HTML5 doctype-->
-<html>
-	<!--   
-   You may substitute jQuery for the App Framework selector library.
-   See http://app-framework-software.intel.com/documentation.php#afui/afui_jquery
-  -->
-	<!-- content goes here-->
-
-	<head>
-		<meta charset="UTF-8">
-		<link rel="stylesheet" type="text/css" href="app_framework/2.1/css/af.ui.min.kg.css">
-		<link rel="stylesheet" type="text/css" href="app_framework/2.1/css/icons.min.css">
-		<link rel="stylesheet" type="text/css" href="css/index_main.less.css" class="main-less">
-		<link rel="stylesheet" type="text/css" href="css/GLBT.css">
-		<title>GLBT Near Me</title>
-		<meta http-equiv="Content-type" content="text/html; charset=utf-8">
-		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=0">
-		<style type="text/css">
-			/* Prevent copy paste for all elements except text fields */
-			*  { -webkit-user-select:none; -webkit-tap-highlight-color:rgba(255, 255, 255, 0); }
-			input, textarea  { -webkit-user-select:text; }
-		</style>
-		<script src="intelxdk.js"></script>
-		<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
-		<script type="text/javascript">
+/** @file main.js
+ *	Purpose:  contains all of the javascript for the index file
+ *
+ * @author Keith Gudger
+ * @copyright  (c) 2014, Keith Gudger, all rights reserved
+ * @license    http://opensource.org/licenses/BSD-2-Clause
+ * @version    Release: 1.0
+ * @package    GLBTNearMe
+ *
+ */
 	var _map = null; // Google Map holder
 	var currentLatitude = "";
 	var currentLongitude = "";
@@ -42,20 +26,34 @@
 	 *	Fires when intel code says device is ready
 	 */
 	var onDeviceReady=function(){
-		if ( typeof QueryString["lat"] === "undefined" ) {
-	        if (intel.xdk.geolocation !== null) {
-	           intel.xdk.geolocation.watchPosition(suc, fail, options);
-	        } else {
-				ready();
-	        }
+		if ( ( typeof QueryString["lat"] === "undefined" ) ||
+			 ( QueryString["lat"] == "" ) ||
+			 ( QueryString["lat"] == 0 ) ) {
+			try {
+		        if (intel.xdk.geolocation !== null) {
+	     	      intel.xdk.geolocation.watchPosition(suc, fail, options);
+				  console.log("geolocation !== null", 4);
+				}
+			} catch(e) { 
+				alert(e.message);
+				console.log("geo watch failed",1);
+			}
 		} else {
-			currentLatitude = QueryString["lat"];
-			currentLongitude = QueryString["lon"];
-			var latlng = new google.maps.LatLng(currentLatitude, currentLongitude);
-	    initialize(latlng); // assigns google map
-		}
-		//hide splash screen
-		intel.xdk.device.hideSplashScreen();
+			queryReady();
+		}			
+	    try {
+        //lock orientation
+	        intel.xdk.device.setRotateOrientation("portrait");
+	        intel.xdk.device.setAutoRotate(false);
+	    } catch (e) {}
+	    try {
+	        //manage power
+	        intel.xdk.device.managePower(true, false);
+	    } catch (e) {}
+	    try {
+			//hide splash screen
+			intel.xdk.device.hideSplashScreen();
+	    } catch (e) {}
 	};
 
 	/**
@@ -66,13 +64,39 @@
 		    if (navigator.geolocation) {
     	      	navigator.geolocation.getCurrentPosition(showPosition);
 			}
-		} else {
-			currentLatitude = QueryString["lat"];
-			currentLongitude = QueryString["lon"];
-			var latlng = new google.maps.LatLng(currentLatitude, currentLongitude);
-	    initialize(latlng); // assigns google map
-		}
+		} else 
+			queryReady();
 	};
+
+	/** 
+	 * function to take care of QueryString if exists
+	 * set up latituce and longitude and fill form.
+	 */
+	function queryReady() {
+		currentLatitude = QueryString["lat"];
+		currentLongitude = QueryString["lon"];
+		var latlng = new google.maps.LatLng(currentLatitude, currentLongitude);
+	    initialize(latlng); // assigns google map
+
+		if ( typeof QueryString["category"] !== "undefined" ) {
+		  var elmnt = document.getElementById('catselect')
+		  var value = decodeURI(QueryString["category"]);
+		  value = value.replace(/[+]/g, " ");
+//		  alert("Category is " + value);
+		  for(var i=0; i < elmnt.options.length; i++)
+		  {
+		    if(elmnt.options[i].value === value) {
+		      elmnt.selectedIndex = i;
+		      break;
+		    }
+		  }
+		}
+		if ( typeof QueryString["zipcode"] !== "undefined" ) 
+			document.getElementById('distform').elements["zipcode"].value = QueryString["zipcode"];
+		if ( typeof QueryString["milesdist"] !== "undefined" ) 
+			document.getElementById('distform').elements		["milesdist"].value = QueryString["milesdist"];
+	}
+		
 	/** 
 	 *	sets current latitude and longitude from ready() function
 	 */
@@ -88,9 +112,6 @@
 	    document.addEventListener( "DOMContentLoaded", ready, false );
 	} else {
 		document.addEventListener("intel.xdk.device.ready",onDeviceReady,false);
-	//lock in "portrait" orientation 
-		intel.xdk.device.setRotateOrientation("portrait");
-        intel.xdk.device.setAutoRotate(false);
 	}
     //Success callback
 	/**
@@ -99,7 +120,6 @@
 	 */
 	var suc = function(p) {
 	    console.log("geolocation success", 4);
-//		document.getElementById("geostat").innerHTML="Intel nav success";
 	    //Draws the map initially
 	    if (_map === null) {
 	    	currentLatitude = p.coords.latitude;
@@ -114,8 +134,6 @@
 	 */			    
 	var fail = function() {
 	    console.log("Geolocation failed. \nPlease enable GPS in Settings.", 1);
-//	    document.getElementById("geostat").innerHTML="Intel nav fail";
-
 	};
 	/**
 	 *	opens window in browser for the donate button
@@ -135,18 +153,13 @@
 	function getinitparams() {
 		var zip = document.getElementById('distform').elements["zipcode"].value;
 		var params = "" ;
-	    if ( (zip == null || zip == "") &&
-			 (currentLatitude == "") ) {
-	        alert("You must enter a zip code or turn on navigation (GPS).");
-		} else {
-			var miles = document.getElementById('distform').elements["milesdist"].value;
-			if ( zip != "" ) 
-				params = "zip=" + zip;
-			else
-				params = "latitude=" + currentLatitude + "&longitude=" + currentLongitude;
-			if ((miles.length > 0) && (miles > 0))
-				params+= "&miles=" + miles;
-		}
+		var miles = document.getElementById('distform').elements["milesdist"].value;
+		if ( zip != "" ) 
+			params = "zip=" + zip;
+		else
+			params = "latitude=" + currentLatitude + "&longitude=" + currentLongitude;
+		if ((miles.length > 0) && (miles > 0))
+			params+= "&miles=" + miles;
 		return params;
 	};
 	/**
@@ -154,9 +167,11 @@
 	 *	and redirects to bottom of page
 	 */
 	function mapformredirect() {
-		var params = startlist();
-		listpagefunc(params,cat,false);
-		window.location.hash = "map_canvas";
+		if ( checkZip() ) {
+			var params = startlist();
+			listpagefunc(params,cat,false);
+			window.location.hash = "map_canvas";
+		}	
 	};
 	/**
 	 *	gets category from form and adds to GET request
@@ -172,9 +187,26 @@
 	 *	onclick function for "list" button
 	 */
 	function listformFn() {
-		var params = startlist() ;
-		listpagefunc(params,cat,true);
+		if ( checkZip() ) {
+			var params = startlist() ;
+			listpagefunc(params,cat,true);
+		}
 	};
+
+	/**
+	 * Function checks whether zip and navigation are on
+	 * @return true if so, false otherwise
+	 */
+	function checkZip() {
+		var zip = document.getElementById('distform').elements["zipcode"].value;
+	    if ( (zip == null || zip == "") &&
+			 (currentLatitude == "") ) {
+	        alert("You must enter a zip code or turn on navigation (GPS).");
+			return false;
+		} else
+			return true;
+	}
+	
 	/**
 	 *	onclick function for "National Organizations" button
 	 */
@@ -394,44 +426,6 @@
 			namedist += "<br>Sub-category: " + subcat; // can't use sub-cat */
 		return namedist ;
 	};
-</script>
-	<!--   
-   You may substitute jQuery for the App Framework selector library.
-   See http://app-framework-software.intel.com/documentation.php#afui/afui_jquery
-  -->
-		<script type="application/javascript" src="app_framework/2.1/appframework.js"></script>
-		<script type="application/javascript" src="app_framework/2.1/appframework.ui.js" data-ver="1"></script>
-		<script src="cordova.js"></script>
-		<script src="xhr.js"></script>
-
-		<script type="application/javascript" src="js/jquery.min.js"></script>
-		<script type="text/javascript"
-			 src="ui/min/jquery.ui.map.full.min.js">
-		</script>
-		<script type="application/javascript" src="js/index_user_scripts.js"></script>
-		<script type="application/javascript" src="js/af_subpage.js"></script>
-		<script type="text/javascript">
-			/* Intel native bridge is available */
-			af.feat.nativeTouchScroll = true; // sets up scrolling
-			af.ui.ready(
-			    function(){
-			    //do something
-//					alert("ui ready");
-/*					if(typeof intel === 'undefined') {
-					    ready();
-					} else {
-						onDeviceReady();
-					}*/
-				}
-			);
-		</script>
-<style>
-    #map_canvas {
-        width:  100%;
-        height: 380px;
-    }
-</style>
-<script>
 	/**
 	 *	sets up google map to _map
 	 *	@param latlng is latitude and longitude values in array
@@ -453,127 +447,5 @@
 		document.getElementById("latin").value = currentLatitude;
 		document.getElementById("lonin").value = currentLongitude;
     };
-</script>
-	</head>
 
-	<body id="afui" style="  background-color: #fff3a1">
-	<script>
-	var QueryString = function () {
-	  // This function is anonymous, is executed immediately and 
-	  // the return value is assigned to QueryString!
-	  var query_string = {};
-	  var query = window.location.search.substring(1);
-	  var vars = query.split("&");
-	  for (var i=0;i<vars.length;i++) {
-	    var pair = vars[i].split("=");
-	    query_string[pair[0]] = pair[1];
-	  } 
-    return query_string;
-	} ();
-</script>
 
-		<!-- content goes here-->
-		<div class="uwrap" id="content">
-			<div class="upage panel" id="mainpage" data-header="af-header-0" data-footer="af-footer-0">
-				<div class="upage-outer">
-					<header class="container-group inner-element uib_w_1 header-img" data-uib="app_framework/header" data-ver="1" id="af-header-0">
-						<table style="width:100%"> <tr><td>
-						<img class="displaycenter" src="images/glbtnearmelogo.png"></td></tr><tr><td>
-						<div class="begin-div">
-							<p class="begin-txt">Find 15000<br>gay, lesbian, bisexual, transgender<br>resources at your finger tips!</p>
-						</div> <!-- begin-div -->
-						</td></tr></table>
-					</header>
-					<div class="upage-content" id="mainsub">
-						<div class="second-div">
-						<form id="distform" action="index2.html">
-    						<img id="purpleFormBackground" class="displaycenter" src="images/index_1-7.png" border="0" />
-    						<div id="purpleFormContents" style=""> 
-       Enter Zip Code<br>(or leave blank to use current location)<input class="purpletext" type="text" maxlength="9" size="15" name="zipcode"/><br />
-       Enter Miles<input class="purpletext" type="text" maxlength="4" size="15" name="milesdist"/><br /><p>Select a Category</p>
-								<div id="purpleboxCategory">
- 
-   <select name="category" size="1" tabindex="3">
-     <option selected value="All Categories">All Categories</option>
-   	<option value="Aids">Aids</option>
-		<option value="Bar/Club">Bar/Club</option>
-		<option value="Bisexual">Bisexual</option>
-		<option value="Bookstore">Bookstore</option>
-		<option value="Business">Business</option>
-		<option value="Community Center">Community Center</option>
-		<option value="Crisis">Crisis</option>
-		<option value="Cultural">Cultural</option>
-		<option value="Employee">Employee</option>
-		<option value="Fundraising">Fundraising</option>
-		<option value="Health">Health</option>
-		<option value="Hotel">Hotel</option>
-		<option value="Hotline">Hotline</option>
-		<option value="Legal">Legal</option>
-		<option value="Lesbian">Lesbian</option>
-		<option value="Media">Media</option>
-		<option value="Political">Political</option>
-		<option value="Professional">Professional</option>
-		<option value="Recovery">Recovery</option>
-		<option value="Religion">Religion</option>
-		<option value="Restaurant">Restaurant</option>
-		<option value="Social">Social</option>
-		<option value="Sports">Sports</option>
-		<option value="Support">Support</option>
-		<option value="Student">Student</option>
-		<option value="Transgender">Transgender</option>
-		<option value="Youth">Youth</option>
-   </select>
-								</div> <!-- purpleboxCategory -->
-								<div id="buttonlist" style="width:50%; float:left;">
-<input class="buttonleft orangeButton" type="button" name="List" value="List" onclick="listformFn()">
-								</div> <!-- buttonlist -->
-								<div id="buttonmap" style="width:50%;float:right">
-<!-- <input class="buttonright orangeButton" type="button" name="Map" value="Map" onclick="mapformredirect()"> -->
-			<input id="latin" type="hidden" name="lat" value="">
-			<input id="lonin" type="hidden" name="lon"  value="">
-			<input type="submit" class="buttonright orangeButton"  value="Map">
-								</div> <!-- buttonmap -->
-    						</div> <!-- purpleFormContents -->
-	</form>
-						</div> <!-- second-div -->
-						<div> <p></p> </div> <!-- spacer -->
-						<div id="button1" style="width:50%; float:left;">
-<input id="NationalButton" class="buttonleft purpleButton" type="button" name="National" value="National Listings" onclick="nationalFn()">
-						</div> <!-- button1 -->
-						<div id="button2" style="width:50%;float:right">
-<input class="buttonright purpleButton" type="button" name="Donate" value="Donate Online" onclick="donateFn()">
-						</div> <!-- button2 -->
-					</div> <!-- mainsub -->
-
-					<div id="natsp" class="upage-content hidden">
-						<div>
-							<div id="buttonback" style="width:50%; float:left;"><a class="buttonleft widget uib_w_3 orangeButton" data-uib="app_framework/button" data-ver="1" href="#mainpage" data-transition="fade">Back</a>
-							</div>
-							<div id="buttonMap" style="width:50%; float:right;"><!--<a class="buttonright widget uib_w_6 orangeButton" data-uib="app_framework/button" data-ver="1" href="#mapmainpage" data-transition="fade">Map</a> --><br>
-							</div><br>
-						</div><br>
-						<div id="natlisting">
-<!--						<ul id="natlisting" class="none">
-							</ul> -->
-						</div>
-					</div>
-					<!-- /upage-content -->
-
-					<footer class="inner-element uib_w_2 footer-txt" data-uib="app_framework/footer" data-ver="1" id="af-footer-0">
-						<p>If you need support or
-							<br>to speak with a volunter call:
-							<br>GLBT National Hotline: 1-888-843-4564
-							<br>GLBT National Youth Talkline:
-							<br>1-800-246-PRIDE</p>
-					</footer>
-				</div>
-				<!-- /upage-outer -->
-
-			</div>
-			<!-- /upage -->
-
-		</div>
-		<!-- /uwrap -->
-	</body>
-
-</html>

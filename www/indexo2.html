@@ -17,12 +17,15 @@
 		<meta http-equiv="Content-type" content="text/html; charset=utf-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=0">
 		<style type="text/css">
-			/* Prevent copy paste for all elements except text fields */
-			*  { -webkit-user-select:none; -webkit-tap-highlight-color:rgba(255, 255, 255, 0); }
+			/* Prevent copy paste for all elements except text fields 
+ -webkit-user-select:none; */
+			*  {-webkit-tap-highlight-color:rgba(255, 255, 255, 0); }
 			input, textarea  { -webkit-user-select:text; }
 		</style>
 		<script src="intelxdk.js"></script>
 		<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
+<!-- <script src="http://debug-software.intel.com/target/target-script-min.js#CWElQc4ftoR0P4Du2_XYSMiuKMiu7uZwjq7pO9OE_LU"></script>
+-->
 		<script type="text/javascript">
 	var _map = null; // Google Map holder
 	var currentLatitude = "";
@@ -42,18 +45,24 @@
 	 *	Fires when intel code says device is ready
 	 */
 	var onDeviceReady=function(){
-		if ( typeof QueryString["lat"] === "undefined" ) {
+		if ( ( typeof QueryString["lat"] === "undefined" ) ||
+			 ( QueryString["lat"] == "" ) ||
+			 ( QueryString["lat"] == 0 ) ) {
 	        if (intel.xdk.geolocation !== null) {
-	           intel.xdk.geolocation.watchPosition(suc, fail, options);
+				alert("intel.xdk.geo !== null");
+				try {
+//		           intel.xdk.geolocation.watchPosition(suc, fail, options);
+		           intel.xdk.geolocation.getCurrentPosition(suc, fail);
+				} catch(e) { 
+					alert("getCurrentPosition failed");
+					console.log("geo watch failed",1);
+				}
+		    console.log("geolocation !== null", 4);
 	        } else {
 				ready();
 	        }
-		} else {
-			currentLatitude = QueryString["lat"];
-			currentLongitude = QueryString["lon"];
-			var latlng = new google.maps.LatLng(currentLatitude, currentLongitude);
-	    initialize(latlng); // assigns google map
-		}
+		} else 
+			queryReady();
 		//hide splash screen
 		intel.xdk.device.hideSplashScreen();
 	};
@@ -62,17 +71,45 @@
 	 *	Fires when DOM page loaded
 	 */
     function ready() {
+		alert("In ready instead");
 		if ( typeof QueryString["lat"] === "undefined" ) {
 		    if (navigator.geolocation) {
     	      	navigator.geolocation.getCurrentPosition(showPosition);
 			}
-		} else {
-			currentLatitude = QueryString["lat"];
-			currentLongitude = QueryString["lon"];
-			var latlng = new google.maps.LatLng(currentLatitude, currentLongitude);
-	    initialize(latlng); // assigns google map
-		}
+		} else 
+			queryReady();
 	};
+
+	/** 
+	 * function to take care of QueryString if exists
+	 * set up latituce and longitude and fill form.
+	 */
+	function queryReady() {
+		alert("In queryReady?");
+		currentLatitude = QueryString["lat"];
+		currentLongitude = QueryString["lon"];
+		var latlng = new google.maps.LatLng(currentLatitude, currentLongitude);
+	    initialize(latlng); // assigns google map
+
+		if ( typeof QueryString["category"] !== "undefined" ) {
+		  var elmnt = document.getElementById('catselect')
+		  var value = decodeURI(QueryString["category"]);
+		  value = value.replace(/[+]/g, " ");
+//		  alert("Category is " + value);
+		  for(var i=0; i < elmnt.options.length; i++)
+		  {
+		    if(elmnt.options[i].value === value) {
+		      elmnt.selectedIndex = i;
+		      break;
+		    }
+		  }
+		}
+		if ( typeof QueryString["zipcode"] !== "undefined" ) 
+			document.getElementById('distform').elements["zipcode"].value = QueryString["zipcode"];
+		if ( typeof QueryString["milesdist"] !== "undefined" ) 
+			document.getElementById('distform').elements		["milesdist"].value = QueryString["milesdist"];
+	}
+		
 	/** 
 	 *	sets current latitude and longitude from ready() function
 	 */
@@ -99,6 +136,7 @@
 	 */
 	var suc = function(p) {
 	    console.log("geolocation success", 4);
+		alert("Geo Success");
 //		document.getElementById("geostat").innerHTML="Intel nav success";
 	    //Draws the map initially
 	    if (_map === null) {
@@ -113,6 +151,7 @@
 	 *	fail function for intel gps routine - does nothing 
 	 */			    
 	var fail = function() {
+		alert("Geo Fail");
 	    console.log("Geolocation failed. \nPlease enable GPS in Settings.", 1);
 //	    document.getElementById("geostat").innerHTML="Intel nav fail";
 
@@ -135,18 +174,13 @@
 	function getinitparams() {
 		var zip = document.getElementById('distform').elements["zipcode"].value;
 		var params = "" ;
-	    if ( (zip == null || zip == "") &&
-			 (currentLatitude == "") ) {
-	        alert("You must enter a zip code or turn on navigation (GPS).");
-		} else {
-			var miles = document.getElementById('distform').elements["milesdist"].value;
-			if ( zip != "" ) 
-				params = "zip=" + zip;
-			else
-				params = "latitude=" + currentLatitude + "&longitude=" + currentLongitude;
-			if ((miles.length > 0) && (miles > 0))
-				params+= "&miles=" + miles;
-		}
+		var miles = document.getElementById('distform').elements["milesdist"].value;
+		if ( zip != "" ) 
+			params = "zip=" + zip;
+		else
+			params = "latitude=" + currentLatitude + "&longitude=" + currentLongitude;
+		if ((miles.length > 0) && (miles > 0))
+			params+= "&miles=" + miles;
 		return params;
 	};
 	/**
@@ -154,9 +188,11 @@
 	 *	and redirects to bottom of page
 	 */
 	function mapformredirect() {
-		var params = startlist();
-		listpagefunc(params,cat,false);
-		window.location.hash = "map_canvas";
+		if ( checkZip() ) {
+			var params = startlist();
+			listpagefunc(params,cat,false);
+			window.location.hash = "map_canvas";
+		}	
 	};
 	/**
 	 *	gets category from form and adds to GET request
@@ -172,9 +208,26 @@
 	 *	onclick function for "list" button
 	 */
 	function listformFn() {
-		var params = startlist() ;
-		listpagefunc(params,cat,true);
+		if ( checkZip() ) {
+			var params = startlist() ;
+			listpagefunc(params,cat,true);
+		}
 	};
+
+	/**
+	 * Function checks whether zip and navigation are on
+	 * @return true if so, false otherwise
+	 */
+	function checkZip() {
+		var zip = document.getElementById('distform').elements["zipcode"].value;
+	    if ( (zip == null || zip == "") &&
+			 (currentLatitude == "") ) {
+	        alert("You must enter a zip code or turn on navigation (GPS).");
+			return false;
+		} else
+			return true;
+	}
+	
 	/**
 	 *	onclick function for "National Organizations" button
 	 */
@@ -493,7 +546,7 @@
        Enter Miles<input class="purpletext" type="text" maxlength="4" size="15" name="milesdist"/><br /><p>Select a Category</p>
 								<div id="purpleboxCategory">
  
-   <select name="category" size="1" tabindex="3">
+   <select name="category" size="1" tabindex="3" size="1" id="catselect">
      <option selected value="All Categories">All Categories</option>
    	<option value="Aids">Aids</option>
 		<option value="Bar/Club">Bar/Club</option>
@@ -549,7 +602,7 @@
 						<div>
 							<div id="buttonback" style="width:50%; float:left;"><a class="buttonleft widget uib_w_3 orangeButton" data-uib="app_framework/button" data-ver="1" href="#mainpage" data-transition="fade">Back</a>
 							</div>
-							<div id="buttonMap" style="width:50%; float:right;"><!--<a class="buttonright widget uib_w_6 orangeButton" data-uib="app_framework/button" data-ver="1" href="#mapmainpage" data-transition="fade">Map</a> --><br>
+							<div id="buttonMap" ><!--<a class="buttoncenter widget uib_w_6 orangeButton" data-uib="app_framework/button" data-ver="1" href="#mapmainpage" data-transition="fade">Map</a> --><br>
 							</div><br>
 						</div><br>
 						<div id="natlisting">

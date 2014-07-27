@@ -1,5 +1,13 @@
 <!DOCTYPE html>
 <!--HTML5 doctype-->
+<!--
+ * @file index2.html
+ * @author Keith Gudger
+ * @copyright  (c) 2014, Keith Gudger, all rights reserved
+ * @license    http://opensource.org/licenses/BSD-2-Clause
+ * @version    Release: 1.0
+ * @package    GLBTNearMe
+-->
 <html>
 	<!--   
    You may substitute jQuery for the App Framework selector library.
@@ -23,290 +31,6 @@
 		</style>
 		<script src="intelxdk.js"></script>
 		<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
-		<script type="text/javascript">
-	var _map = null; // Google Map holder
-	var currentLatitude = "";
-	var currentLongitude = "";
-	var options = {			// Intel GPS options
-	    timeout: 10000,
-	    maximumAge: 11000,
-	    enableHighAccuracy: true
-	};
-	var markers = []; // markers array to clear
-	var returnedList; // returned JSON list from GET
-	var cat = "" ;		// category from form
-
-	/* Intel native bridge is available */
-	/**
-	 *	Fires when DOM page loaded
-	 */
-	/**
-	 *	Sets up GET parameters for the REQUEST from the form
-	 *	@return GET string
-	 */
-	function getinitparams() {
-		var zip = document.getElementById('distform').elements["zipcode"].value;
-		var params = "" ;
-	    if ( (zip == null || zip == "") &&
-			 (currentLatitude == "") ) {
-	        alert("You must enter a zip code or turn on navigation (GPS).");
-		} else {
-			var miles = document.getElementById('distform').elements["milesdist"].value;
-			if ( zip != "" ) 
-				params = "zip=" + zip;
-			else
-				params = "latitude=" + currentLatitude + "&longitude=" + currentLongitude;
-			if ((miles.length > 0) && (miles > 0))
-				params+= "&miles=" + miles;
-		}
-		return params;
-	};
-	/**
-	 *	onclick function for "Map" button starts GET request
-	 *	and redirects to bottom of page
-	 */
-	function mapformredirect() {
-		var params = startlist();
-		listpagefunc(params,cat,false);
-		window.location.hash = "map_canvas";
-	};
-	/**
-	 *	gets category from form and adds to GET request
-	 *	@return GET string
-	 */
-	function startlist() {
-		var params = getinitparams();
-		cat = document.getElementById('distform').elements["category"].value;
-		params += "&category=" + encodeURI(cat);
-		return params;
-	}
-	/**
-	 *	onclick function for "list" button
-	 */
-	function listformFn() {
-		var params = startlist() ;
-		listpagefunc(params,cat,true);
-	};
-	/**
-	 *	onclick function for "National Organizations" button
-	 */
-	function nationalFn() {
-		var params = "national=Yes";
-		listpagefunc(params,"National",true);
-	};
-	/**
-	 *	"Ajax" function that sends and processes xmlhttp request
-	 *	@param params is GET request string
-	 *	@param natnl is category for list
-	 *	@makelist is whether list or map
-	 */
-	function listpagefunc(params,natnl,makelist) {
-	    var xmlhttp;
-		try {
-		    xmlhttp=new XMLHttpRequest();
-		} catch(e) {
-			xmlhttp = false;
-		}
-		if (xmlhttp) {
-		    xmlhttp.onreadystatechange=function()
-		    {
-		      if (xmlhttp.readyState==4 && xmlhttp.status==200)
-			  {
-//				alert(xmlhttp.responseText);
-				returnedList = JSON.parse(xmlhttp.responseText);
-				if (makelist)
-					formatlist(params,natnl);
-				else
-					formatmap(params);
-			  }
-			}
-			xmlhttp.open("GET","https://www.volunteerlogin.org/GLBTNearMe/AppResults.php" + '?' + params, true);
-			xmlhttp.send(null);
-		}
-	}; // listpagefunc
-	/**
-	 *	formats map page, deletes old markers, checks to see if
-	 *	you've entered a zip code, if you have, then ignore
-	 *	GPS data and recenter map on zipcode lat / long
-	 *	@param params is GET string
-	 */
-	function formatmap(params) {
-	    var i;
-	    var bounds = new google.maps.LatLngBounds();
-		deleteMarkers(); // hopefully removes all markers
-		var zip = document.getElementById('distform').elements["zipcode"].value;
-		if (zip == "") { // no zip entered, use GPS if available
-			var latlng = new google.maps.LatLng(currentLatitude, currentLongitude);
-			var marker = new google.maps.Marker({
-				position: latlng,
-				map: _map,
-				title: 'Current Position'
-			});
-			marker.setMap(_map);
-			bounds.extend(latlng);
-			endmapformat(bounds);
-		} // we have geolocation
-		else { // use zip code center instead
-			var geocoder = new google.maps.Geocoder();
-			geocoder.geocode( {'address': zip},function(results, status) {
-			 	if (status == google.maps.GeocoderStatus.OK) {
-		        //Got result, center the map and put it out there
-					latlng = results[0].geometry.location;
-					initialize(latlng);
-			        var marker = new google.maps.Marker({
-			            map: _map,
-			            position: latlng,
-						title: 'Current Position'
-       				});
-					bounds.extend(latlng);
-					endmapformat(bounds);
-				}// ends if
-			});
-		} // ends else
-/*		var atext = "i is " + i ;
-		alert(atext);
-		document.getElementById("geostat").innerHTML=i;*/
-	};
-	/**
-	 *	end of map format function 
-	 *	needed because retrieving lat / long for zip code
-	 *	is an asynchronous task, so need to call this function
-	 *	at end of getting data function
-	 *	@param bounds is bounds parameter for Google Map
-	 */
-	function endmapformat(bounds) {
-		for(i = 0; i<returnedList.length; i++) 
-			createMarker(i,bounds);
-		if ( i > 0 ) // some markers added
-		    _map.fitBounds(bounds);
-	};
-	/**
-	 *	creates markers from returnedList, needed because
-	 *	markers wouldn't show up if placed in same function
-	 *	@param i is where in list we are in processing
-	 *	@bounds is google map bounds to set
-	 */
-	function createMarker(i,bounds) {
-		var latitude = returnedList[i].latitude;
-		var longitude = returnedList[i].longitude;
-		var latlng = new google.maps.LatLng(latitude, longitude);
-		var pname = returnedList[i].Name;
-		var c = "A";
-		var iconchar = "images/purple_Marker" + String.fromCharCode(c.charCodeAt(0) + i%26) + ".png";
-		var marker = new google.maps.Marker({
-			position: latlng,
-			map: _map,
-			title: pname,
-			icon: iconchar/*,
-			zIndex: 1000*/
-		});
-		marker.setMap(_map);
-		markers.push(marker); // array of all known markers
-						// this is so we can call them all and
-						// delete them when doing a new search
-		bounds.extend(latlng);
-	    var infoWindow = new google.maps.InfoWindow();
-		pname = '<div style="color: black;">' +listhtml(i) + '</div>';
-        google.maps.event.addListener(marker, 'click', function() {
-            infoWindow.close();
-	        infoWindow.setContent(pname);
-/*	        infoWindow.setOptions({
-	            content: pname
-    		});*/
-        	infoWindow.open(_map, marker);
-        });
-	}; // createMarker end
-
-	/** Sets the map on all markers in the array.
-	 *	@param map is google map variable
-	 *	only used to delete all markers by setting "map" to null
-	 */
-	function setAllMap(map) {
-	  for (var i = 0; i < markers.length; i++) {
-	    markers[i].setMap(map);
-	  }
-	};
-
-/** Removes the markers from the map, but keeps them in the array.*/
-	function clearMarkers() {
-	  setAllMap(null);
-	};
-/** Deletes all markers in the array by removing references 
- *	to them and setting markers[] array to empty.
- */
-	function deleteMarkers() {
-	  clearMarkers();
-	  markers = [];
-	};
-	/**
-	 *	formats listing after data returned from API
-	 *	@param params is GET request string
-	 *	@param natnl is category
-	 */
-	function formatlist(params, natnl) {
-		var numberList = document.getElementById("natlisting");
-	    var i;
-		var oldcat = "" ;
-		var namedist = "" ;
-	    for(i = 0; i<returnedList.length; i++) {
-			if ( oldcat != returnedList[i].Type ) {
-				oldcat = returnedList[i].Type ;
-				namedist+= '<p class="nlist">' + oldcat + '</p>';
-			}
-            //create new text node
-			namedist += listhtml(i);
-			namedist += "<br><br>";
-	    }
-		numberList.innerHTML=namedist;
-		activate_subpage("#natsp"); // slides in list sub-page
-	};
-	/**
-	 *	creates html entries for all list items
-	 */
-	function listhtml(i) {
-		var namedist = returnedList[i].Name;
-		var dist = returnedList[i].Distance;
-		if (dist > 0)
-			namedist += ' - ' + dist + ' Miles';
-		var address1 = returnedList[i].Address1;
-		if (address1.length > 0)
-			namedist += "<br>" + address1;
-		var address2 = returnedList[i].Address2;
-		if (address2.length > 0)
-			namedist += "<br>" + address2;
-		var city = returnedList[i].City;
-		var state = returnedList[i].State;
-		var zip  = returnedList[i].Zip;
-		if (city.length > 0)
-			namedist += "<br>" + city + ', ' + state + ' ' + zip;
-		var phone = returnedList[i].Phone;
-		if (phone.length > 0)
-			namedist += "<br>Phone: " + phone;
-		var hotline = returnedList[i].Hotline;
-		if (hotline.length > 0) {
-			var c = hotline.substr(0,1);
-			if (c >= '0' && c <= '9') {
-				namedist += "<br>Hotline: " + hotline;
-			}
-		}
-		var internet = returnedList[i].Internet;
-		if (internet.length > 0)
-			namedist += "<br>Email: " + internet;
-		var web = returnedList[i].Web;
-		if (web.length > 0)
-			namedist += '<br>Web: <a href="' + web + '">' + web + '</a>';
-		var moreinfo = returnedList[i].moreInformation;
-		if (moreinfo.length > 0) {
-			moreinfo = moreinfo.replace(/\n/g, "");
-			moreinfo = moreinfo.replace(/["']/g, "");
-			namedist += '<br><a href="#" onclick="alert(' + "'" +moreinfo + "'" + ')">More Information</a>' ;
-		}
-/*		var subcat = returnedList[i].sub-cat;
-		if (subcat.length > 0)
-			namedist += "<br>Sub-category: " + subcat; // can't use sub-cat */
-		return namedist ;
-	};
-</script>
 	<!--   
    You may substitute jQuery for the App Framework selector library.
    See http://app-framework-software.intel.com/documentation.php#afui/afui_jquery
@@ -322,6 +46,7 @@
 		</script>
 		<script type="application/javascript" src="js/index_user_scripts.js"></script>
 		<script type="application/javascript" src="js/af_subpage.js"></script>
+<script type="text/javascript" src="js/main2.js"></script> 
 		<script type="text/javascript">
 			/* Intel native bridge is available */
 			af.feat.nativeTouchScroll = true; // sets up scrolling
@@ -334,6 +59,7 @@
 					} else {
 						onDeviceReady();
 					}*/
+					ready();
 				}
 			);
 		</script>
@@ -343,27 +69,69 @@
         height: 380px;
     }
 </style>
-<script>
-	/**
-	 *	sets up google map to _map
-	 *	@param latlng is latitude and longitude values in array
-	 */
-    function initialize(latlng) {
-        var mapCanvas = document.getElementById('map_canvas');
-	    var mapOptions = {
-			center: latlng,
-			zoomControl: true,
-	        zoomControlOptions: {
-	            style: google.maps.ZoomControlStyle.SMALL,
-//	          position: google.maps.ControlPosition.LEFT_TOP
-		    },
-    	    zoom: 12,
-    	    mapTypeId: google.maps.MapTypeId.ROADMAP
-    	};
-        _map = new google.maps.Map(mapCanvas, mapOptions);
-//		setTimeout("$('#map_canvas').gmap('refresh')",500);
-    };
-</script>
 	</head>
+<body id="afui" style="  background-color: #fff3a1">
+<script>
+var QueryString = function () {
+  // This function is anonymous, is executed immediately and 
+  // the return value is assigned to QueryString!
+  var query_string = {};
+  var query = window.location.search.substring(1);
+  var vars = query.split("&");
+  for (var i=0;i<vars.length;i++) {
+    var pair = vars[i].split("=");
+    query_string[pair[0]] = pair[1];
+  } 
+    return query_string;
+} ();
+</script>
 
+	<!-- content goes here-->
+	<div class="uwrap" id="content">
+		<div class="upage panel" id="mainpage" data-header="af-header-0" data-footer="af-footer-0">
+			<div class="upage-outer">
+				<header class="container-group inner-element uib_w_1 header-img" data-uib="app_framework/header" data-ver="1" id="af-header-0">
+					<table style="width:100%"> <tr><td>
+					<img class="displaycenter" src="images/glbtnearmelogo.png"></td></tr><tr><td>
+						<div class="begin-div">
+							<p class="begin-txt">Find 15000<br>gay, lesbian, bisexual, transgender<br>resources at your finger tips!</p>
+						</div> <!-- begin-div -->
+					</td></tr></table>
+				</header>
+				<div class="upage-content" id="mainsub">
+					<form id="backform" action="index.html">
+					<div id="buttonmap" >
+						<input id="latin" type="hidden" name="lat" value="">
+						<input id="lonin" type="hidden" name="lon" value="">
+						<input id="category" type="hidden" name="category" value="">
+						<input id="zipcode" type="hidden" name="zipcode" value="">
+						<input id="milesdist" type="hidden" name="milesdist" value="">
+						<input type="submit" class="buttoncenter orangeButton" value="Back">
+					</div> <!-- buttonmap -->
+					</form>
+					<div id="geostat" > <p style="text-align: center; color:black; font-size: 14px;">Please wait for map to load...</p> 
+					</div> <!-- geostat -->
+					<div style="width:100%;" id="map_cont">
+						<div id="map_canvas" >
+						</div>
+					</div> <!-- map_cont -->
+<!--					<div id="buttonback"><input class="buttonright orangeButton" type="button" name="BacktoStart" value="Back" onclick="backtostart()"> -->
+				</div>
+				<!-- /upage-content -->
+
+				<footer class="inner-element uib_w_2 footer-txt" data-uib="app_framework/footer" data-ver="1" id="af-footer-0">
+					<p>If you need support or
+						<br>to speak with a volunter call:
+						<br>GLBT National Hotline: 1-888-843-4564
+						<br>GLBT National Youth Talkline:
+						<br>1-800-246-PRIDE</p>
+				</footer>
+			</div>
+			<!-- /upage-outer -->
+		</div>
+		<!-- /upage -->
+	</div>
+	<!-- /uwrap -->
+</body>
+</html>
 
