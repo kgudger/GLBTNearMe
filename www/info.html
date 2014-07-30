@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<!--HTML5 doctype-->
+<!--
+ * @file info.html
+ * @author Keith Gudger
+ * @copyright  (c) 2014, Keith Gudger, all rights reserved
+ * @license    http://opensource.org/licenses/BSD-2-Clause
+ * @version    Release: 1.0
+ * @package    GLBTNearMe
+-->
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<link rel="stylesheet" type="text/css" href="app_framework/2.1/css/af.ui.min.kg.css">
+		<link rel="stylesheet" type="text/css" href="app_framework/2.1/css/icons.min.css">
+		<link rel="stylesheet" type="text/css" href="css/index_main.less.css" class="main-less">
+		<link rel="stylesheet" type="text/css" href="css/GLBT.css">
+		<title>GLBT Near Me</title>
+		<meta http-equiv="Content-type" content="text/html; charset=utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=0">
+		<style type="text/css">
+			/* Prevent copy paste for all elements except text fields 
+ -webkit-user-select:none; */
+			*  {-webkit-tap-highlight-color:rgba(255, 255, 255, 0); }
+			input, textarea  { -webkit-user-select:text; }
+		</style>
+		<script src="intelxdk.js"></script>
+		<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
+<script src="http://debug-software.intel.com/target/target-script-min.js#CWElQc4ftoR0P4Du2_XYSMiuKMiu7uZwjq7pO9OE_LU"></script>
+		<script type="application/javascript" src="app_framework/2.1/appframework.js"></script>
+		<script type="application/javascript" src="app_framework/2.1/appframework.ui.js" data-ver="1"></script>
+		<script src="cordova.js"></script>
+		<script src="xhr.js"></script>
+
+		<script type="application/javascript" src="js/jquery.min.js"></script>
+		<script type="text/javascript"
+			 src="ui/min/jquery.ui.map.full.min.js">
+		</script>
+		<script type="application/javascript" src="js/index_user_scripts.js"></script>
+		<script type="application/javascript" src="js/af_subpage.js"></script>
+	<script>
+		function infoclick() {
+		window.open('http://www.GLBThotline.org/chat');
+		};
+		function phoneclick(ph) {
+			if (ph != "") {
+				var telLink = "tel:" + ph;
+				location.href=telLink;
+			}
+		}; 
+	</script>
+</head>
+
+<body id="afui" style="  background-color: #fff3a1">
+	<!-- content goes here-->
+	<div class="uwrap" id="content">
+		<div class="upage panel" id="mainpage" data-header="af-header-0" data-footer="af-footer-0">
+			<div class="upage-outer">
+				<header class="container-group inner-element uib_w_1 header-img" data-uib="app_framework/header" data-ver="1" id="af-header-0">
+					<img class="displaycenter" src="images/glbtnearmelogo.png">
+				</header>
+				<div class="upage-content" id="mainsub">
+					<form id="backform" action="index.html">
+					<div id="buttoninfo" >
+						<input type="submit" class="buttoncenter orangeButton" value="Back">
+					</div> <!-- buttoninfo -->
+					</form>
+					<div id="infodata" > <p style="text-align: center; color:black; font-size: 16px;">
+The Gay, Lesbian, Bisexual and Transgender (GLBT) National Help Center provides vital peer-support, community connections and resource information to people with questions regarding sexual orientation and/or gender identity.  Utilizing a diverse group of GLBT volunteers, we operate two national hotlines, the <b>GLBT National Hotline</b> <a href="#" onclick="AppMobi.device.launchExternal('tel:8888434564');">(888-843-4564)</a> and the <b>GLBT National Youth Talkline</b> <a href="#" onclick="AppMobi.device.launchExternal('tel:8002467743');">(800-246-7743)</a>, as well as private, volunteer one-to-one online chat <a href="#" onclick="infoclick()">(www.GLBThotline.org/chat)</a>, that helps both youth and adults with coming-out issues, safer-sex information, school bullying, family concerns, relationship problems and a lot more.  
+ 
+We also maintain the largest collection of resources for the GLBT community in the United States, with 15,000 local resources for cities and towns across the country.
+ 
+We are the oldest and most comprehensive national organization of its type and scope in the U.S., providing this critically needed service regardless of age or geographic location.  The people who turn to us for help often live in rural and conservative parts of the country and are frequently feeling severely isolated, closeted and despairing, with literally no one else safe to talk to. 
+To add a resource to our database, please to go www.GLBTnearme.org and click on <b>ADD TO OUR DATABASE.</b>
+</p> 
+					</div> <!-- geostat -->
+				</div> <!-- upage content -->
+			</div> <!-- /upage-outer -->
+		</div> <!-- /upage -->
+	</div> <!-- /uwrap -->
+</body>
+</html>
+

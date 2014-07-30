@@ -142,6 +142,13 @@
 //		intel.xdk.device.launchExternal("http://www.volunteerlogin.org/GLBTNearMe/donate.html");
 		window.open('http://www.volunteerlogin.org/GLBTNearMe/donate.html');
 	};
+	/**
+	 *	opens window in browser for the donate button
+	 */
+	function infoFn() {
+//		intel.xdk.device.launchExternal("http://www.volunteerlogin.org/GLBTNearMe/donate.html");
+		window.location('info.html');
+	};
 
 	function backtostart() {
 		window.location.hash = "mainsub";
