@@ -10,6 +10,13 @@
   background-attachment: no-scroll;
   background-repeat:no-repeat;
 } 
+.splashtext {
+  background-color: white;
+  color: black !important;
+  font-family: Century Gothic, Arial, Courier New, Sans-Serif; 
+  font-size: 16px !important;
+  line-height:150% !important; 
+}
 .begin-txt {
   background-color: #fff3a1;
   color: black !important;

@@ -20,6 +20,11 @@
 	var returnedList; // returned JSON list from GET
 	var cat = "" ;		// category from form
 	var infoWindow;		// holder for all infoWindows
+	var queryType = {
+		list: 0,
+		map: 1,
+		date: 2,
+	};
 
 	/* Intel native bridge is available */
 	/** 
@@ -95,7 +100,11 @@
 			document.getElementById('distform').elements["zipcode"].value = QueryString["zipcode"];
 		if ( typeof QueryString["milesdist"] !== "undefined" ) 
 			document.getElementById('distform').elements		["milesdist"].value = QueryString["milesdist"];
-	}
+	
+//		alert("End of queryReady");
+/*		af.ui.autoLaunch = true; // stops splashscreen
+		af.ui.launch();
+*/	}
 		
 	/** 
 	 *	sets current latitude and longitude from ready() function
@@ -147,7 +156,12 @@
 	 */
 	function infoFn() {
 //		intel.xdk.device.launchExternal("http://www.volunteerlogin.org/GLBTNearMe/donate.html");
-		window.location('info.html');
+//		window.location('info.html');
+		var locstring = "info.html?lat=" + currentLatitude + "&lon=" + currentLongitude ;
+		locstring += "&zipcode=" + document.getElementById('distform').elements["zipcode"].value
+		locstring += "&milesdist=" + document.getElementById('distform').elements["milesdist"].value
+		locstring += "&category=" + document.getElementById('distform').elements["catselect"].value
+		location.href = locstring;
 	};
 
 	function backtostart() {
@@ -176,7 +190,7 @@
 	function mapformredirect() {
 		if ( checkZip() ) {
 			var params = startlist();
-			listpagefunc(params,cat,false);
+			listpagefunc(params,cat,queryType.map);
 			window.location.hash = "map_canvas";
 		}	
 	};
@@ -196,7 +210,7 @@
 	function listformFn() {
 		if ( checkZip() ) {
 			var params = startlist() ;
-			listpagefunc(params,cat,true);
+			listpagefunc(params,cat,queryType.list);
 		}
 	};
 
@@ -219,7 +233,7 @@
 	 */
 	function nationalFn() {
 		var params = "national=Yes";
-		listpagefunc(params,"National",true);
+		listpagefunc(params,"National",queryType.list);
 	};
 	/**
 	 *	"Ajax" function that sends and processes xmlhttp request
@@ -241,16 +255,31 @@
 			  {
 //				alert(xmlhttp.responseText);
 				returnedList = JSON.parse(xmlhttp.responseText);
-				if (makelist)
-					formatlist(params,natnl);
-				else
-					formatmap(params);
+				switch (makelist) {
+					case queryType.list:
+						formatlist(params,natnl);
+						break;
+					case queryType.map:
+						formatmap(params);
+						break;
+					case queryType.date:
+						formatdate();
+						break;
+				}
 			  }
 			}
 			xmlhttp.open("GET","https://www.volunteerlogin.org/GLBTNearMe/AppResults.php" + '?' + params, true);
 			xmlhttp.send(null);
 		}
 	}; // listpagefunc
+	/**
+	 *	formats date field
+	 */
+	function formatdate() {
+		var retstring = "Data Last Updated: " + returnedList ;
+		document.getElementById('updatedate').innerHTML = retstring;
+	};
+
 	/**
 	 *	formats map page, deletes old markers, checks to see if
 	 *	you've entered a zip code, if you have, then ignore

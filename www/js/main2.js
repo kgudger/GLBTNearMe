@@ -26,6 +26,29 @@
 	 *	Fires when DOM page loaded
 	 */
 		function ready() {
+		    try {
+        		if (intel.xdk.device.platform.indexOf("Android") != -1) {
+        		    intel.xdk.display.useViewport(480, 480);
+        		    document.getElementById("map_canvas").style.width = "480px";
+        		} else if (intel.xdk.device.platform.indexOf("iOS") != -1) {
+        		    if (intel.xdk.device.model.indexOf("iPhone") != -1 || intel.xdk.device.model.indexOf("iPod") != -1) {
+        		        intel.xdk.display.useViewport(320, 320);
+        		        document.getElementById("map_canvas").style.width = "320px";
+        		    } else if (intel.xdk.device.model.indexOf("iPad") != -1) {
+        		        intel.xdk.display.useViewport(768, 768);
+        		        document.getElementById("map_canvas").style.width = "768px";
+        		    }
+        		}
+        		if (intel.xdk.iswin8) {
+        		    document.getElementById("map_canvas").style.width = screen.width + "px";
+        		    document.getElementById("map_canvas").style.height = screen.height + "px";
+        		}
+		        if (intel.xdk.geolocation !== null) {
+		            document.getElementById("map_canvas").style.height = (screen.height-250) + "px";
+		        }
+		    } catch (e) {
+//		        alert(e.message);
+		    }
 			currentLatitude = QueryString["lat"];
 			currentLongitude = QueryString["lon"]
 			document.getElementById("latin").value = currentLatitude;
