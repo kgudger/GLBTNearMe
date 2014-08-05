@@ -11,15 +11,15 @@
 	var _map = null; // Google Map holder
 	var currentLatitude = "";
 	var currentLongitude = "";
-	var options = {			// Intel GPS options
-	    timeout: 10000,
-	    maximumAge: 11000,
-	    enableHighAccuracy: true
-	};
 	var markers = []; // markers array to clear
 	var returnedList; // returned JSON list from GET
 	var cat = "" ;		// category from form
 	var infoWindow;		// holder for all infoWindows
+	var queryType = {
+		list: 0,
+		map: 1,
+		date: 2,
+	};
 
 	/* Intel native bridge is available */
 	/**
@@ -65,7 +65,7 @@
 			if ( typeof QueryString["milesdist"] !== "undefined" ) 
 				document.getElementById('backform').elements		["milesdist"].value = QueryString["milesdist"];
 			var params = startlist() ;
-			listpagefunc(params);
+			listpagefunc(params,"",queryType.map);
 		}
 	/**
 	 *	Sets up GET parameters for the REQUEST from the form
@@ -97,34 +97,6 @@
 		return params;
 	}
 
-	/**
-	 *	"Ajax" function that sends and processes xmlhttp request
-	 *	@param params is GET request string
-	 *	@param natnl is category for list
-	 *	@makelist is whether list or map
-	 */
-	function listpagefunc(params) {
-	    var xmlhttp;
-		try {
-		    xmlhttp=new XMLHttpRequest();
-		} catch(e) {
-			xmlhttp = false;
-		}
-		if (xmlhttp) {
-		    xmlhttp.onreadystatechange=function()
-		    {
-		      if (xmlhttp.readyState==4 && xmlhttp.status==200)
-			  {
-//				alert(xmlhttp.responseText);
-				returnedList = JSON.parse(xmlhttp.responseText);
-				formatmap();
-			  }
-			}
-//			alert(params);
-			xmlhttp.open("GET","https://www.volunteerlogin.org/GLBTNearMe/AppResults.php" + '?' + params, true);
-			xmlhttp.send(null);
-		}
-	}; // listpagefunc
 	/**
 	 *	formats map page, deletes old markers, checks to see if
 	 *	you've entered a zip code, if you have, then ignore
@@ -181,10 +153,17 @@
 	 *	@param bounds is bounds parameter for Google Map
 	 */
 	function endmapformat(bounds) {
-		for(i = 0; i<returnedList.length; i++) 
+		var i ;
+		if ( (typeof QueryString["lindex"] !== "undefined" ) &&
+			 ((i = QueryString["lindex"]) >= 0) ) {
 			createMarker(i,bounds);
-		if ( i > 0 ) // some markers added
 		    _map.fitBounds(bounds);
+		} else {
+			for(i = 0; i<returnedList.length; i++) 
+				createMarker(i,bounds);
+			if ( i > 0 ) // some markers added
+			    _map.fitBounds(bounds);
+		}
 	};
 	/**
 	 *	creates markers from returnedList, needed because
@@ -216,9 +195,6 @@
         google.maps.event.addListener(marker, 'click', function() {
             infoWindow.close();
 	        infoWindow.setContent(pname);
-/*	        infoWindow.setOptions({
-	            content: pname
-    		});*/
         	infoWindow.open(_map, marker);
         });
 	}; // createMarker end
@@ -243,53 +219,6 @@
 	function deleteMarkers() {
 	  clearMarkers();
 	  markers = [];
-	};
-
-	/**
-	 *	creates html entries for all list items
-	 */
-	function listhtml(i) {
-		var namedist = returnedList[i].Name;
-		var dist = returnedList[i].Distance;
-		if (dist > 0)
-			namedist += ' - ' + dist + ' Miles';
-		var address1 = returnedList[i].Address1;
-		if (address1.length > 0)
-			namedist += "<br>" + address1;
-		var address2 = returnedList[i].Address2;
-		if (address2.length > 0)
-			namedist += "<br>" + address2;
-		var city = returnedList[i].City;
-		var state = returnedList[i].State;
-		var zip  = returnedList[i].Zip;
-		if (city.length > 0)
-			namedist += "<br>" + city + ', ' + state + ' ' + zip;
-		var phone = returnedList[i].Phone;
-		if (phone.length > 0)
-			namedist += "<br>Phone: " + phone;
-		var hotline = returnedList[i].Hotline;
-		if (hotline.length > 0) {
-			var c = hotline.substr(0,1);
-			if (c >= '0' && c <= '9') {
-				namedist += "<br>Hotline: " + hotline;
-			}
-		}
-		var internet = returnedList[i].Internet;
-		if (internet.length > 0)
-			namedist += "<br>Email: " + internet;
-		var web = returnedList[i].Web;
-		if (web.length > 0)
-			namedist += '<br>Web: <a href="' + web + '">' + web + '</a>';
-		var moreinfo = returnedList[i].moreInformation;
-		if (moreinfo.length > 0) {
-			moreinfo = moreinfo.replace(/\n/g, "");
-			moreinfo = moreinfo.replace(/["']/g, "");
-			namedist += '<br><a href="#" onclick="alert(' + "'" +moreinfo + "'" + ')">More Information</a>' ;
-		}
-/*		var subcat = returnedList[i].sub-cat;
-		if (subcat.length > 0)
-			namedist += "<br>Sub-category: " + subcat; // can't use sub-cat */
-		return namedist ;
 	};
 
 	/**

@@ -5,7 +5,7 @@
       "type": "App Designer",
       "src": "appDesigner",
       "projectGuid": "efea7905-cbe4-4768-9b5b-7fd24dd2819f",
-      "lastModifiedDate": 1406749875700,
+      "lastModifiedDate": 1407171536223,
       "creationDate": 1404513454984
     },
     "XDK-app-designer": "true",
@@ -137,7 +137,9 @@
         "platform_": "android",
         "name_": "Android",
         "preferences_": {
-          "Orientation": "portrait"
+          "Orientation": "portrait",
+          "android-targetedSdkVersion": "",
+          "android-minSdkVersion": ""
         },
         "isActive_": true,
         "appName_": "GLBTNearMe",
@@ -203,7 +205,8 @@
         "appVersion_": "1.0.0",
         "runtime_": "Cordova 3.x",
         "appDescription_": "",
-        "appAuthor_": ""
+        "appAuthor_": "",
+        "appVersionCode_": ""
       },
       "Android-Crosswalk": {
         "platform_": "android",
