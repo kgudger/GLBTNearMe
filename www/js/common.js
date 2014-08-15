@@ -99,3 +99,25 @@
 		return namedist ;
 	};
 
+	/**
+	 *	opens window in browser for the donate button
+	 */
+	function infoFn() {
+//		intel.xdk.device.launchExternal("http://www.volunteerlogin.org/GLBTNearMe/donate.html");
+//		window.location('info.html');
+		var locstring = GETform("info.html");
+		location.href = locstring;
+	};
+
+	/** formats GET query string
+	 */
+	function GETform(infourl) {
+		var locstring = infourl + "?lat=" + currentLatitude + "&lon=" + currentLongitude ;
+		locstring += "&zipcode=" + document.getElementById('distform').elements["zipcode"].value;
+		locstring += "&milesdist=" + document.getElementById('distform').elements["milesdist"].value;
+		var cat = document.getElementById('distform').elements["catselect"].value;
+		cat = cat.replace(/ /g,"+"); 
+		locstring += "&category=" + cat;
+		return locstring ;
+	}
+

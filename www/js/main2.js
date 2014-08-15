@@ -58,12 +58,12 @@
 				var decodeval = decodeURI(firstval);
 				decodeval = decodeval.replace(/[+]/g, " ");
 //				alert("Values are " + firstval + "," + decodeval);
-				document.getElementById('backform').elements["category"].value = decodeval;
+				document.getElementById('distform').elements["catselect"].value = decodeval;
 			}
 			if ( typeof QueryString["zipcode"] !== "undefined" ) 
-				document.getElementById('backform').elements["zipcode"].value = QueryString["zipcode"];
+				document.getElementById('distform').elements["zipcode"].value = QueryString["zipcode"];
 			if ( typeof QueryString["milesdist"] !== "undefined" ) 
-				document.getElementById('backform').elements		["milesdist"].value = QueryString["milesdist"];
+				document.getElementById('distform').elements		["milesdist"].value = QueryString["milesdist"];
 			var params = startlist() ;
 			listpagefunc(params,"",queryType.map);
 		}

@@ -93,14 +93,14 @@ var QueryString = function () {
 					</td></tr></table>
 				</header>
 				<div class="upage-content" id="mainsub">
-					<form id="backform" action="index.html">
-					<div id="buttonmap" >
+					<form id="distform" action="index.html">
+					<div id="buttonmap" class="backbutton">
 						<input id="latin" type="hidden" name="lat" value="">
 						<input id="lonin" type="hidden" name="lon" value="">
-						<input id="category" type="hidden" name="category" value="">
+						<input id="catselect" type="hidden" name="category" value="">
 						<input id="zipcode" type="hidden" name="zipcode" value="">
 						<input id="milesdist" type="hidden" name="milesdist" value="">
-						<input type="submit" class="buttoncenter orangeButton" value="Back">
+						<input type="submit" class="orangeButton" value="Back">
 					</div> <!-- buttonmap -->
 					</form>
 					<div id="geostat" > <p style="text-align: center; color:black; font-size: 14px;">Please wait for map to load...</p> 
@@ -114,11 +114,14 @@ var QueryString = function () {
 				<!-- /upage-content -->
 
 				<footer class="inner-element uib_w_2 footer-txt" data-uib="app_framework/footer" data-ver="1" id="af-footer-0">
-					<p>If you need support or
+						<table style="width:100%"> <tr><td>
+						<a href="#" onclick="infoFn()"><img src="images/InfoCircle.png"></a></td>
+						<td>If you need support or
 						<br>to speak with a volunter call:
 						<br>GLBT National Hotline: 1-888-843-4564
 						<br>GLBT National Youth Talkline:
-						<br>1-800-246-PRIDE</p>
+						<br>1-800-246-PRIDE
+						</td></tr></table>
 				</footer>
 			</div>
 			<!-- /upage-outer -->

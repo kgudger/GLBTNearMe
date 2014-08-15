@@ -48,6 +48,10 @@ img.displaycenter {
     margin-left: auto;
     margin-right: auto;
 }
+.backbutton { 
+	padding-top: 10px;
+	padding-left: 5px;
+}
 
 .purpleButton {
   white-space: normal;
@@ -156,4 +160,10 @@ p.nlist {
 	margin: 0px, 0px !important;
 	padding: 5px !important;
   font-size: 16px !important;
+}
+#infodata {
+	text-align: center;
+	color:black;
+	font-size: 16px;
+	line-height:120% !important;
 }

@@ -28,6 +28,21 @@
 	 *	Fires when intel code says device is ready
 	 */
 	var onDeviceReady=function(){
+		try {
+    		if (intel.xdk.device.platform.indexOf("Android") != -1) {
+       		    intel.xdk.display.useViewport(480, 480);
+       		} else if (intel.xdk.device.platform.indexOf("iOS") != -1) {
+       		    if (intel.xdk.device.model.indexOf("iPhone") != -1 || intel.xdk.device.model.indexOf("iPod") != -1) {
+       		        intel.xdk.display.useViewport(320, 320);
+       		    } else if (intel.xdk.device.model.indexOf("iPad") != -1) {
+       		        intel.xdk.display.useViewport(768, 768);
+       		    }
+       		}
+       		if (intel.xdk.iswin8) {
+       		}
+	    } catch (e) {
+//		        alert(e.message);
+	    }
 		if ( ( typeof QueryString["lat"] === "undefined" ) ||
 			 ( QueryString["lat"] == "" ) ||
 			 ( QueryString["lat"] == 0 ) ) {
@@ -140,27 +155,6 @@
 	function donateFn() {
 //		intel.xdk.device.launchExternal("http://www.volunteerlogin.org/GLBTNearMe/donate.html");
 		window.open('http://www.volunteerlogin.org/GLBTNearMe/donate.html');
-	};
-
-	/** formats GET query string
-	 */
-	function GETform(infourl) {
-		var locstring = infourl + "?lat=" + currentLatitude + "&lon=" + currentLongitude ;
-		locstring += "&zipcode=" + document.getElementById('distform').elements["zipcode"].value;
-		locstring += "&milesdist=" + document.getElementById('distform').elements["milesdist"].value;
-		var cat = document.getElementById('distform').elements["catselect"].value;
-		cat = cat.replace(/ /g,"+"); 
-		locstring += "&category=" + cat;
-		return locstring ;
-	}
-	/**
-	 *	opens window in browser for the donate button
-	 */
-	function infoFn() {
-//		intel.xdk.device.launchExternal("http://www.volunteerlogin.org/GLBTNearMe/donate.html");
-//		window.location('info.html');
-		var locstring = GETform("info.html");
-		location.href = locstring;
 	};
 
 	/** formats map page with the one marker
