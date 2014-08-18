@@ -64,6 +64,9 @@
 					}*/
 				}
 			);
+		function splashclick() {
+		window.open('http://www.GLBThotline.org');
+		};
 		</script>
 	</head>
 
@@ -86,9 +89,19 @@
     return query_string;
 	} ();
 </script>
-<div id="splashscreen" class='ui-loader'>
-<img src="images/splashxh.png" onclick="af.ui.launch();" style="height:100%;">
-</div>
+<div id="splashscreen" class='ui-loader' style:"width:100%;">
+	<div id="splashbox">
+<img class="displaycenter" src="images/glbtnearmelogo.png">
+<p class="splashtext"><br>Over 15,000 resources for the<br>gay, lesbian, bisexual, transgender and<br>questioning community nationwide.<br></p>
+<img class="displaycenter" src="images/clicktoload.png" onclick="af.ui.launch();">
+
+<p class="splashtext"><b>OR</b><br>If you need peer-support or want to<br>speak directly with one of our<br>volunteers, you can call our toll-free<br>hotline at 
+<a href="#" onclick="AppMobi.device.launchExternal('tel:8888434564');"><b>888-843-4564</b></a><br>
+Our youth talk line can be reached<br>toll-free at<br><b>800-245-PRIDE</b><br><a href="#" onclick="AppMobi.device.launchExternal('tel:8002467743');"><b>(800-246-7743)</b></a>
+<br>
+<a href="#" onclick="splashclick()"><b>www.GLBThotline.org</b></a></p>
+	</div> <!-- splashbox -->
+</div> <!-- splashscreen -->
 <script>
 	var splash = document.getElementById ( "splashscreen" ) ;
 	var query = window.location.search.substring(1);
@@ -188,7 +201,7 @@
 					<!-- /upage-content -->
 					<footer class="inner-element uib_w_2 footer-txt" data-uib="app_framework/footer" data-ver="1" id="af-footer-0">
 						<table style="width:100%"> <tr><td>
-						<a href="#" onclick="location.href = 'info.html';"><img src="images/InfoCircle.png"></a></td>
+						<a href="#" onclick="infoFn()"><img src="images/InfoCircle.png"></a></td>
 						<td>If you need support or
 							<br>to speak with a volunter call:
 							<br>GLBT National Hotline: 1-888-843-4564

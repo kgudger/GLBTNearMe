@@ -85,8 +85,8 @@
 		if (internet.length > 0)
 			namedist += "<br>Email: " + internet;
 		var web = returnedList[i].Web;
-		if (web.length > 0)
-			namedist += '<br>Web: <a href="' + web + '">' + web + '</a>';
+		if (web.length > 0) 
+			namedist += '<br>Web: <a href="#" onclick="moreclick(' + "'" + web + "'" + ')">' + web + '</a>';
 		var moreinfo = returnedList[i].moreInformation;
 		if (moreinfo.length > 0) {
 			moreinfo = moreinfo.replace(/\n/g, "");
@@ -99,8 +99,18 @@
 		return namedist ;
 	};
 
+/**
+ *	opens browser window when clicked
+ */
+	function moreclick(url) {
+		url = "http://" + url ;
+		if (typeof (intel.xdk.device) === 'undefined') 
+			window.open(url,'_system');
+		else
+			intel.xdk.device.launchExternal(url);
+	};
 	/**
-	 *	opens window in browser for the donate button
+	 *	opens info page.
 	 */
 	function infoFn() {
 //		intel.xdk.device.launchExternal("http://www.volunteerlogin.org/GLBTNearMe/donate.html");

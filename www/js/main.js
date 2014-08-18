@@ -153,8 +153,10 @@
 	 *	opens window in browser for the donate button
 	 */
 	function donateFn() {
-//		intel.xdk.device.launchExternal("http://www.volunteerlogin.org/GLBTNearMe/donate.html");
-		window.open('http://www.volunteerlogin.org/GLBTNearMe/donate.html');
+		if (typeof (intel.xdk.device) === 'undefined') 
+			window.open('http://www.volunteerlogin.org/GLBTNearMe/donate.html','_system');
+		else
+			intel.xdk.device.launchExternal('http://www.volunteerlogin.org/GLBTNearMe/donate.html');
 	};
 
 	/** formats map page with the one marker

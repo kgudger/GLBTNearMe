@@ -60,20 +60,14 @@
 		}
 	);
 /**
- *	calls phone dialer when clicked
- */
-		function infoclick() {
-		window.open('http://www.GLBThotline.org/chat');
-		};
-/**
  *	opens browser window when clicked
  */
-		function phoneclick(ph) {
-			if (ph != "") {
-				var telLink = "tel:" + ph;
-				location.href=telLink;
-			}
-		}; 
+		function infoclick(url) {
+			if (typeof (intel.xdk.device) === 'undefined') 
+				window.open(url,'_system');
+			else
+				intel.xdk.device.launchExternal(url);
+		};
 	</script>
 </head>
 
@@ -99,7 +93,7 @@ var QueryString = function () {
 				<header class="container-group inner-element uib_w_1 header-img" data-uib="app_framework/header" data-ver="1" id="af-header-0">
 					<img class="displaycenter" src="images/glbtnearmelogo.png">
 				</header>
-				<div class="upage-content" id="mainsub">
+				<div class="upage-content" id="mainsub" style="background-color:#fff3a1;">
 					<form id="backform" action="index.html">
 					<div id="buttonmap" >
 						<input id="latin" type="hidden" name="lat" value="">
@@ -112,10 +106,16 @@ var QueryString = function () {
 					</div> <!-- buttoninfo -->
 					</form>
 					<div id="infodata" >
-The Gay, Lesbian, Bisexual and Transgender (GLBT) National Help Center provides vital peer-support, community connections and resource information to people with questions regarding sexual orientation and/or gender identity.  Utilizing a diverse group of GLBT volunteers, we operate two national hotlines, the <b>GLBT National Hotline</b> <a href="#" onclick="AppMobi.device.launchExternal('tel:8888434564');">(888-843-4564)</a> and the <b>GLBT National Youth Talkline</b> <a href="#" onclick="AppMobi.device.launchExternal('tel:8002467743');">(800-246-7743)</a>, as well as private, volunteer one-to-one online chat <a href="#" onclick="infoclick()">(www.GLBThotline.org/chat)</a>, that helps both youth and adults with coming-out issues, safer-sex information, school bullying, family concerns, relationship problems and a lot more.<br><br>
+The Gay, Lesbian, Bisexual and Transgender (GLBT) National Help Center provides vital peer-support, community connections and resource information to people with questions regarding sexual orientation and/or gender identity.  Utilizing a diverse group of GLBT volunteers, we operate two national hotlines, the <b>GLBT National Hotline</b>
+<!-- <a href="#" onclick="AppMobi.device.launchExternal('tel:8888434564');">(888-843-4564)</a> -->
+<a href="tel:+1-888-843-4564">(888-843-4564)</a>
+ and the <b>GLBT National Youth Talkline</b> 
+<!-- <a href="#" onclick="AppMobi.device.launchExternal('tel:8002467743');">(800-246-7743)</a> -->
+<a href="tel:+1-888-246-7743">(888-246-7743)</a>
+, as well as private, volunteer one-to-one online chat <a href="#" onclick="infoclick('http://www.GLBThotline.org/chat')">(www.GLBThotline.org/chat)</a>, that helps both youth and adults with coming-out issues, safer-sex information, school bullying, family concerns, relationship problems and a lot more.<br><br>
 We also maintain the largest collection of resources for the GLBT community in the United States, with 15,000 local resources for cities and towns across the country.<br><br>
 We are the oldest and most comprehensive national organization of its type and scope in the U.S., providing this critically needed service regardless of age or geographic location.  The people who turn to us for help often live in rural and conservative parts of the country and are frequently feeling severely isolated, closeted and despairing, with literally no one else safe to talk to.<br><br>
-To add a resource to our database, please go to <a href="http://www.GLBTnearme.org">www.GLBTnearme.org</a> and click on <b>ADD TO OUR DATABASE.</b>
+To add a resource to our database, please go to <a href="#" onclick="infoclick('http://www.GLBTnearme.org')">www.GLBTnearme.org</a> and click on <b>ADD TO OUR DATABASE.</b>
 					</div> <!-- geostat -->
 				</div> <!-- upage content -->
 			</div> <!-- /upage-outer -->

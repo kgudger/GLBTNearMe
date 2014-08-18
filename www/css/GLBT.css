@@ -10,11 +10,16 @@
   background-attachment: no-scroll;
   background-repeat:no-repeat;
 } 
+#splashbox {
+	width:100%;
+	height:100% !important;
+}
 .splashtext {
   background-color: white;
   color: black !important;
   font-family: Century Gothic, Arial, Courier New, Sans-Serif; 
-  font-size: 16px !important;
+/*  font-size: 16px !important; */
+  font-size: 3vmin !important;
   line-height:150% !important; 
 }
 .begin-txt {
@@ -29,6 +34,7 @@
 	text-align:center;
 }
 .second-div {
+  background-color: #fff3a1;
   width:100%;
 }
 img.displaycenter {
@@ -138,9 +144,7 @@ ul.none {
 	height: 300px;*/
 }
 #natlisting {
-/*    display: block;
-    margin-left: auto;
-    margin-right: auto;*/
+	background-color: #fff3a1;
 	text-align: left;
 	color: black;
   font-size: 12px !important;
@@ -162,6 +166,7 @@ p.nlist {
   font-size: 16px !important;
 }
 #infodata {
+	background-color: #fff3a1;
 	text-align: center;
 	color:black;
 	font-size: 16px;
