@@ -172,3 +172,13 @@ p.nlist {
 	font-size: 16px;
 	line-height:120% !important;
 }
+
+img.setwidth {
+	max-width: 300px;
+	width: 100%;
+}
+img.setheight {
+	max-height: 60px;
+	height: 100%;
+}
+
