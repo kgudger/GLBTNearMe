@@ -154,9 +154,9 @@
 	 */
 	function donateFn() {
 		if (typeof (intel.xdk.device) === 'undefined') 
-			window.open('http://www.volunteerlogin.org/GLBTNearMe/donate.html','_system');
+			window.open('https://donatenow.networkforgood.org/1210845','_system');
 		else
-			intel.xdk.device.launchExternal('http://www.volunteerlogin.org/GLBTNearMe/donate.html');
+			intel.xdk.device.launchExternal('https://donatenow.networkforgood.org/1210845');
 	};
 
 	/** formats map page with the one marker
@@ -205,6 +205,7 @@
 	 */
 	function listformFn() {
 		if ( checkZip() ) {
+			document.getElementById('waitlist').innerHTML = "Please wait for list to load";
 			var params = startlist() ;
 			listpagefunc(params,cat,queryType.list);
 		}
@@ -228,6 +229,7 @@
 	 *	onclick function for "National Organizations" button
 	 */
 	function nationalFn() {
+		document.getElementById('waitlist').innerHTML = "Please wait for list to load";
 		var params = "national=Yes";
 		listpagefunc(params,"National",queryType.list);
 	};
@@ -255,13 +257,27 @@
 				namedist+= '<p class="nlist">' + oldcat + '</p>';
 			}
             //create new text node
-			var natlist = (natnl == "National") ? false : true;
+			var natlist = (natnl == "National") ? listingType.natlist : listingType.fulllist;
 			namedist += listhtml(i,natlist);
 			namedist += "<br><br>";
 	    }
 		numberList.innerHTML=namedist;
+		document.getElementById('waitlist').innerHTML = "&nbsp";
+
 		activate_subpage("#natsp"); // slides in list sub-page
 	};
+
+	/**
+	 *	formats data for individual listing and calls sub-page swap
+	 *	@param i is index into list
+	 */
+	function full_list(i) {
+		var listdata = document.getElementById("natsinglelist");
+		var listing = listhtml(i, listingType.infolist);
+		listdata.innerHTML=listing;
+		activate_subpage("#uib_page_detail"); // slides in sub-list detail page.
+	}
+
 	/**
 	 *	sets up form to latitude and longitude
 	 */

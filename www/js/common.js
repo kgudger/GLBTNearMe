@@ -9,6 +9,16 @@
  *
  */
 
+/**
+ *	type of listing
+ */
+	var listingType = {
+		fulllist: 0, // table w/ pin, name, infoicon
+		map: 1,		 // listing w/ name, address, no links.
+		infolist: 2, // full listing with clickable links (no map pin)
+		natlist: 3,  // table w/ name, infoicon
+	};
+
 	/**
 	 *	"Ajax" function that sends and processes xmlhttp request
 	 *	@param params is GET request string
@@ -49,19 +59,34 @@
 
 	/**
 	 *	creates html entries for all list items
+	 *	
+	 *	@param i is position in returned list
+	 *	@param listing is boolean, true if for detailed list
+	 *	or blank if for map or national.
+	 *	@returns html formated list for page
 	 */
 	function listhtml(i, listing) {
-		listing = (typeof listing === "undefined") ? false : listing;
+		listing = (typeof listing === "undefined") ? listingType.fulllist : listing;
 		var namedist = returnedList[i].Name;
 		var dist = returnedList[i].Distance;
 		if (dist > 0)
 			namedist += ' - ' + dist + ' Miles';
+
+		if ( (listing == listingType.fulllist) || 
+			 (listing == listingType.natlist) ) {
+			var newnamedist = '<table><tr><td>' ;
+			if (listing == listingType.fulllist) {
+				var c = "A"; // start with an 'A', then move thru alphabet
+				var iconchar = "images/purple_Marker" + String.fromCharCode(c.charCodeAt(0) + i%26) + '.png"></a>';
+				newnamedist+= '<a onclick="mapone(' + i + ')"><img src="' + iconchar +'</td>';
+			}
+			newnamedist += '<td class=ilist>' + namedist + 
+				'</td><td class="iicon"><a onclick="full_list(' + i + ')"><img class = "isize" src="images/iOS_7_info_button.jpg"></td></table>';
+			return newnamedist;
+		}
 		var address1 = returnedList[i].Address1;
 		if (address1.length > 0) {
-			if ( listing) 
-				namedist += '<br><a href="#" onclick="mapone(' + i + ')">' + address1 + "</a>";
-			else
-				namedist += '<br>' + address1;
+			namedist += '<br>' + address1;
 		}
 		var address2 = returnedList[i].Address2;
 		if (address2.length > 0)
@@ -83,15 +108,16 @@
 		}
 		var internet = returnedList[i].Internet;
 		if (internet.length > 0)
-			namedist += "<br>Email: " + internet;
+			namedist += '<br>Email: <a href="#" onclick="emailclick(' + "'" + internet + "'" + ')">' + internet + '</a>';
 		var web = returnedList[i].Web;
 		if (web.length > 0) 
 			namedist += '<br>Web: <a href="#" onclick="moreclick(' + "'" + web + "'" + ')">' + web + '</a>';
 		var moreinfo = returnedList[i].moreInformation;
 		if (moreinfo.length > 0) {
-			moreinfo = moreinfo.replace(/\n/g, "");
+			moreinfo = moreinfo.replace(/\n/g, "<br>");
 			moreinfo = moreinfo.replace(/["']/g, "");
-			namedist += '<br><a href="#" onclick="alert(' + "'" +moreinfo + "'" + ')">More Information</a>' ;
+//			namedist += '<br><a href="#" onclick="alert(' + "'" +moreinfo + "'" + ')">More Information</a>' ;
+			namedist += '<br><br>' + moreinfo;
 		}
 /*		var subcat = returnedList[i].sub-cat;
 		if (subcat.length > 0)
@@ -109,6 +135,18 @@
 		else
 			intel.xdk.device.launchExternal(url);
 	};
+
+/**
+ *	opens email client when clicked
+ */
+	function emailclick(url) {
+		url = "mailto:" + url ;
+		if (typeof (intel.xdk.device) === 'undefined') 
+			window.open(url,'_system');
+		else
+			intel.xdk.device.launchExternal(url);
+	};
+
 	/**
 	 *	opens info page.
 	 */

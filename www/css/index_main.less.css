@@ -269,7 +269,7 @@ body:not(#afui) .upage-outer {
   display: none;
 }
 .header-img {
-  background-color: #fff3a1;
+  background-color: white;
 }
 @media all {
   #afui .grid-pad {

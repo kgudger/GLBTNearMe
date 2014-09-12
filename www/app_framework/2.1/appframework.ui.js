@@ -1,4 +1,4 @@
-/*! intel-appframework - v2.1.0 - 2014-04-23 */
+/*! intel-appframework - v2.1.0 - 2014-05-22 */
 
 /**
  * af.actionsheet - an actionsheet for html5 mobile apps
@@ -987,6 +987,7 @@ if (!Date.now)
                         clearInterval(this.scrollTopInterval);
                         this.preventHideRefresh = !this.refreshRunning; // if it's not running why prevent it xD
                         this.moved = false;
+                        if(e.target.getAttribute("no-scroll")) return e.preventDefault();                        
                         this.onTouchStart(e);
                         if(!this.bubbles)
                             e.stopPropagation();
@@ -1763,7 +1764,6 @@ if (!Date.now)
             //save scrollInfo
             this.lastScrollInfo = scrollInfo;
             this.hasMoved = false;
-
             if(this.elementInfo.maxTop === 0 && this.elementInfo.maxLeft === 0 && this.lockBounce)
                 this.scrollToTop(0);
             else
@@ -1842,6 +1842,7 @@ if (!Date.now)
         jsScroller.prototype.onTouchMove = function (event) {
 
             if (this.currentScrollingObject === null) return;
+            if(event.target&&event.target.getAttribute('type')&&event.target.getAttribute('type').toLowerCase().indexOf('range')!==-1) return;
             //event.preventDefault();
             var scrollInfo = this.calculateMovement(event);
             this.calculateTarget(scrollInfo);
@@ -1927,7 +1928,7 @@ if (!Date.now)
                     this.lastScrollInfo.x = baseTop + changeX;
                 }
             }
-            if(this.lockBounce||(!this.refresh)){
+            if(this.lockBounce&&(!this.refresh)){
 
                 if(this.lastScrollInfo.x>0){
                     this.lastScrollInfo.x=0;
@@ -2775,7 +2776,7 @@ if (!Date.now)
         return $.touchLayer;
     };
     //configuration stuff
-    var inputElements = ["input", "select", "textarea"];
+    var inputElements = ["input", "select", "textarea","range"];
     var autoBlurInputTypes = ["button", "radio", "checkbox", "range", "date"];
     var requiresJSFocus = $.os.ios; //devices which require .focus() on dynamic click events
     var verySensitiveTouch = $.os.blackberry; //devices which have a very sensitive touch and touchmove is easily fired even on simple taps
@@ -3130,7 +3131,6 @@ if (!Date.now)
             this.dY = e.touches[0].pageY;
             this.lastTimestamp = e.timeStamp;
             this.lastTouchStartX = this.lastTouchStartY = null;
-
             if ($.os.ios) {
 
                 if (skipTouchEnd === e.touches[0].identifier) {
@@ -3171,7 +3171,7 @@ if (!Date.now)
 
             // We allow forcing native tap in android devices (required in special cases)
             var forceNativeTap = ($.os.android && e && e.target && e.target.getAttribute && e.target.getAttribute("data-touchlayer") === "ignore");
-
+            
             //if on edit mode, allow all native touches
             //(BB10 must still be prevented, always clicks even after move)
             if (forceNativeTap || (this.isFocused_ && !$.os.blackberry10)) {
@@ -3283,7 +3283,7 @@ if (!Date.now)
             this.scrollTimeoutEl_ = null;
         },
 
-        onTouchMove: function(e) {
+        onTouchMove: function(e) {            
             //set it as moved
             var wasMoving = this.moved;
             this.moved = true;
@@ -3312,9 +3312,9 @@ if (!Date.now)
             }
             //non-native scroll devices
 
-            if ((!$.os.blackberry10)) {
+            if ((!$.os.blackberry10&&!this.requiresNativeTap)) {
                 //legacy stuff for old browsers
-                if (!this.isScrolling || !$.feat.nativeTouchScroll)
+                if (!this.isScrolling || (!$.feat.nativeTouchScroll&&!this.requiresNativeTap))
                     e.preventDefault();
                 return;
             }
@@ -4328,7 +4328,7 @@ if (!Date.now)
             var panelMask = $.query(".afui_panel_mask");
             time = time || this.transitionTime;
             var open = this.isSideMenuOn();
-            var toX=aside?"-"+asideMenu.width():menu.width();
+            var toX=aside?"-"+numOnly(asideMenu.css('width')):numOnly(menu.css('width'));
             // add panel mask to block when side menu is open for phone devices
             if(panelMask.length === 0 && window.innerWidth < $.ui.handheldMinWidth){
                 els.append("<div class='afui_panel_mask'></div>");
@@ -5829,7 +5829,7 @@ if (!Date.now)
 
 
                     if($.ui.splitview&&window.innerWidth>parseInt($.ui.handheldMinWidth,10)){
-                        $.ui.sideMenuWidth=$("#menu").width()+"px";
+                        $.ui.sideMenuWidth=$("#menu").css("width")+"px";
                     }
 
                     var firstPanelId = that.getPanelId(defaultHash);
@@ -5857,9 +5857,13 @@ if (!Date.now)
                     that.launchCompleted = true;
                     //trigger ui ready
                     $.query("#afui #splashscreen").remove();
-                    setTimeout(function(){
+                    if($.os.fennec){
                         $(document).trigger("afui:ready");
-                    });
+                    }
+                    else
+                        setTimeout(function(){
+                            $(document).trigger("afui:ready");
+                        });
 
                 };
                 if (loadingDefer) {
