@@ -259,7 +259,7 @@
             //create new text node
 			var natlist = (natnl == "National") ? listingType.natlist : listingType.fulllist;
 			namedist += listhtml(i,natlist);
-			namedist += "<br><br>";
+			namedist += "<br>";
 	    }
 		numberList.innerHTML=namedist;
 		document.getElementById('waitlist').innerHTML = "&nbsp";

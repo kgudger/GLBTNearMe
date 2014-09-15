@@ -175,7 +175,7 @@ ul.none {
 	text-align: left;
 	color: black;
   font-size: 12px !important;
-  line-height:100% !important;
+  line-height:60% !important;
 }
 
 .lstyle {
@@ -191,6 +191,7 @@ p.nlist {
 	margin: 0px, 0px !important;
 	padding: 5px !important;
   font-size: 16px !important;
+	margin-bottom: 15px !important;
 }
 #infodata {
 	background-color: white;
@@ -209,21 +210,27 @@ img.setheight {
 	height: 100%;
 }
 
-td.iicon {
+.iicon {
 	width: 40px;
 	height: 20px;
-    position: absolute;
-    right: 20px;
-	padding: 10px;
+/*    position: absolute;
+    right: 20px; */
+	float: right; 
+	padding: 0px,40px;
 }
-td.ilist {
+.ilist {
 	color: black !important;
 	font-size: 18px;
 	line-height:110% !important;
-	padding: 5px 60px 5px 20px !important;
-	border-bottom: 1px blue solid !important;
+	padding: 0px 40px 5px 10px !important;
+/*	border-bottom: 1px blue solid !important; */
+	min-height: 50px;
+	display: inline-block; 
+	width: 80%;
 }
-
+#mappin {
+	float: left;
+}
 img.isize {
 	height: 30 px;
 }
@@ -232,7 +239,7 @@ img.isize {
 	color: black !important;
 	font-size: 18px;
 	line-height:110% !important;
-	padding: 5px 60px 5px 20px !important;
+	padding: 5px 20px 5px 10px !important;
 }
 
 .bluebottom {

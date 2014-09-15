@@ -74,14 +74,18 @@
 
 		if ( (listing == listingType.fulllist) || 
 			 (listing == listingType.natlist) ) {
-			var newnamedist = '<table><tr><td>' ;
+			var newnamedist = '<div><div id="mappin">' ;
 			if (listing == listingType.fulllist) {
 				var c = "A"; // start with an 'A', then move thru alphabet
 				var iconchar = "images/purple_Marker" + String.fromCharCode(c.charCodeAt(0) + i%26) + '.png"></a>';
-				newnamedist+= '<a onclick="mapone(' + i + ')"><img src="' + iconchar +'</td>';
+				newnamedist+= '<a onclick="mapone(' + i + ')"><img src="' + iconchar +'</div>';
 			}
-			newnamedist += '<td class=ilist>' + namedist + 
-				'</td><td class="iicon"><a onclick="full_list(' + i + ')"><img class = "isize" src="images/iOS_7_info_button.jpg"></td></table>';
+			newnamedist += '<div class="bluebottom"><div class=ilist>' + namedist + 
+				'</div><div class="iicon"><a onclick="full_list(' + i + ')"><img class = "isize" src="images/iOS_7_info_button.jpg"></div></div>';
+
+			if (listing == listingType.fulllist) { // needed for fulllist
+				newnamedist += '</div>';
+			}
 			return newnamedist;
 		}
 		var address1 = returnedList[i].Address1;
