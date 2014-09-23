@@ -251,13 +251,14 @@
 	    var i;
 		var oldcat = "" ;
 		var namedist = "" ;
+		var natlist = (natnl == "National") ? listingType.natlist : listingType.fulllist;
 	    for(i = 0; i<returnedList.length; i++) {
 			if ( oldcat != returnedList[i].Type ) {
 				oldcat = returnedList[i].Type ;
+//				console.log("In formatlist, category is " + oldcat + " and length is " + returnedList.length + " and i is " + i);
 				namedist+= '<p class="nlist">' + oldcat + '</p>';
 			}
             //create new text node
-			var natlist = (natnl == "National") ? listingType.natlist : listingType.fulllist;
 			namedist += listhtml(i,natlist);
 			namedist += "<br>";
 	    }

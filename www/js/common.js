@@ -74,11 +74,12 @@
 
 		if ( (listing == listingType.fulllist) || 
 			 (listing == listingType.natlist) ) {
-			var newnamedist = '<div><div id="mappin">' ;
+//			console.log("In listhtml, listing is " + listing);
+			var newnamedist = '<div>' ;
 			if (listing == listingType.fulllist) {
 				var c = "A"; // start with an 'A', then move thru alphabet
 				var iconchar = "images/purple_Marker" + String.fromCharCode(c.charCodeAt(0) + i%26) + '.png"></a>';
-				newnamedist+= '<a onclick="mapone(' + i + ')"><img src="' + iconchar +'</div>';
+				newnamedist+= '<div id="mappin"><a onclick="mapone(' + i + ')"><img src="' + iconchar +'</div>';
 			}
 			newnamedist += '<div class="bluebottom"><div class=ilist>' + namedist + 
 				'</div><div class="iicon"><a onclick="full_list(' + i + ')"><img class = "isize" src="images/iOS_7_info_button.jpg"></div></div>';
