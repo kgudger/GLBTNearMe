@@ -84,7 +84,7 @@ var QueryString = function () {
 
 	<!-- content goes here-->
 	<div class="uwrap" id="content">
-		<div class="upage panel" id="mainpage" data-header="af-header-0" data-footer="af-footer-0">
+		<div class="upage panel" id="mainpage" data-header="af-header-0" data-footer="af-footer-0" style="background-color: white">
 			<div class="upage-outer">
 				<header class="container-group inner-element uib_w_1 header-img" data-uib="app_framework/header" data-ver="1" id="af-header-0">
 <!--					<table style="width:100%"> <tr><td>
@@ -102,7 +102,7 @@ var QueryString = function () {
 						<input id="catselect" type="hidden" name="category" value="">
 						<input id="zipcode" type="hidden" name="zipcode" value="">
 						<input id="milesdist" type="hidden" name="milesdist" value="">
-						<input type="submit" class="orangeButton" value="Back">
+						<input type="submit" class="backbutton orangeButton" value="Back">
 					</div> <!-- buttonmap -->
 					</form>
 					<div id="geostat" > <p style="text-align: center; color:black; font-size: 14px;">Please wait for map to load...</p> 
@@ -112,6 +112,15 @@ var QueryString = function () {
 						</div>
 					</div> <!-- map_cont -->
 <!--					<div id="buttonback"><input class="buttonright orangeButton" type="button" name="BacktoStart" value="Back" onclick="backtostart()"> -->
+				</div>
+				<div id="map_full_list" class="upage-content hidden">
+					<div>
+						<div id=buttonback" class="backbutton"><a class="widget uib_w_3 orangeButton" data-uib="app_framework/button" data-ver="1" href="#mainpage" data-transition="fade">Back</a>
+						</div>
+						<br>
+					</div>
+					<div id="maplisting">
+					</div>
 				</div>
 				<!-- /upage-content -->
 

@@ -71,24 +71,45 @@
 		var dist = returnedList[i].Distance;
 		if (dist > 0)
 			namedist += ' - ' + dist + ' Miles';
+		else { 
+			if (listing != listingType.natlist) 
+				namedist += ' - <1 mile';
+		}
+		var name2 = returnedList[i].Name2;
+		if (name2.length > 0)
+			namedist += "<br>" + name2;
+		var newnamedist = '<div>' ;
 
-		if ( (listing == listingType.fulllist) || 
-			 (listing == listingType.natlist) ) {
-//			console.log("In listhtml, listing is " + listing);
-			var newnamedist = '<div>' ;
-			if (listing == listingType.fulllist) {
+		switch (listing) {
+			case listingType.fulllist:
 				var c = "A"; // start with an 'A', then move thru alphabet
 				var iconchar = "images/purple_Marker" + String.fromCharCode(c.charCodeAt(0) + i%26) + '.png"></a>';
 				newnamedist+= '<div id="mappin"><a onclick="mapone(' + i + ')"><img src="' + iconchar +'</div>';
-			}
-			newnamedist += '<div class="bluebottom"><div class=ilist>' + namedist + 
-				'</div><div class="iicon"><a onclick="full_list(' + i + ')"><img class = "isize" src="images/iOS_7_info_button.jpg"></div></div>';
+				// drop into natlist for rest of div
+			case listingType.natlist:
+				newnamedist += '<div><div class="ilist">' + namedist + '</div><div class="iicon"><a onclick="full_list(' + i + ')"><img class = "isize" src="images/iOS_7_info_button.jpg"></a></div></div>';
+				return newnamedist;
+				break;
+			case listingType.map:
+				newnamedist += '<div id="mappin"><a onClick="mapDirectFn(' + i + ')"value="Directions"><img src="images/car.png"></a></div><table><td>' + namedist + '</td><td style="width:30px;float:right"><a onClick="mapListFn(' + i + ')"value="More Info"><img src="images/arrows.png"></a></td></table>' ;
+				return newnamedist;
+				break;
+			case listingType.infolist:
+			default:
+				namedist+= restOfList(namedist,i);
+				break;
+			} // end of switch
+		return namedist ;
+	};
 
-			if (listing == listingType.fulllist) { // needed for fulllist
-				newnamedist += '</div>';
-			}
-			return newnamedist;
-		}
+/**
+ *	Rest of full listing
+ *	@param namedist is already started list
+ *	@param i is index into returned data
+ *	@return list with new info in it.
+ */
+	function restOfList(namedist,i) {
+
 		var address1 = returnedList[i].Address1;
 		if (address1.length > 0) {
 			namedist += '<br>' + address1;
@@ -121,14 +142,10 @@
 		if (moreinfo.length > 0) {
 			moreinfo = moreinfo.replace(/\n/g, "<br>");
 			moreinfo = moreinfo.replace(/["']/g, "");
-//			namedist += '<br><a href="#" onclick="alert(' + "'" +moreinfo + "'" + ')">More Information</a>' ;
 			namedist += '<br><br>' + moreinfo;
 		}
-/*		var subcat = returnedList[i].sub-cat;
-		if (subcat.length > 0)
-			namedist += "<br>Sub-category: " + subcat; // can't use sub-cat */
-		return namedist ;
-	};
+		return namedist;
+	} // end of restOfList
 
 /**
  *	opens browser window when clicked

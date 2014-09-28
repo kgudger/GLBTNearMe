@@ -20,6 +20,11 @@
 		map: 1,
 		date: 2,
 	};
+	var directionsDisplay;
+	var directionsService;
+	var latlng; // global now so driving directions know where to start
+	var bounds = new google.maps.LatLngBounds();
+	// global now so returning to map fits bounds
 
 	/* Intel native bridge is available */
 	/**
@@ -105,14 +110,13 @@
 	 */
 	function formatmap() {
 	    var i;
-	    var bounds = new google.maps.LatLngBounds();
 		deleteMarkers(); // hopefully removes all markers
 //		var zip = document.getElementById('distform').elements["zipcode"].value;
 		var zip = QueryString["zipcode"] ; // from GET params
 		if (zip == "") { // no zip entered, use GPS if available
 			currentLatitude = QueryString["lat"];
 			currentLongitude = QueryString["lon"];
-			var latlng = new google.maps.LatLng(currentLatitude, currentLongitude);
+			latlng = new google.maps.LatLng(currentLatitude, currentLongitude); // using global variable now
 			initialize(latlng);
 			var marker = new google.maps.Marker({
 				position: latlng,
@@ -174,12 +178,13 @@
 	function createMarker(i,bounds) {
 		var latitude = returnedList[i].latitude;
 		var longitude = returnedList[i].longitude;
-		var latlng = new google.maps.LatLng(latitude, longitude);
+		// latlngl is a local variable, renamed to prevent confusion
+		var latlngl = new google.maps.LatLng(latitude, longitude);
 		var pname = returnedList[i].Name;
 		var c = "A";
 		var iconchar = "images/purple_Marker" + String.fromCharCode(c.charCodeAt(0) + i%26) + ".png";
 		var marker = new google.maps.Marker({
-			position: latlng,
+			position: latlngl,
 			map: _map,
 			title: pname,
 			icon: iconchar/*,
@@ -189,9 +194,9 @@
 		markers.push(marker); // array of all known markers
 						// this is so we can call them all and
 						// delete them when doing a new search
-		bounds.extend(latlng);
+		bounds.extend(latlngl);
 	    infoWindow = new google.maps.InfoWindow();
-		pname = '<div style="color: black;">' +listhtml(i) + '</div>';
+		pname = '<div style="color: black;">' +listhtml(i,listingType.map) + '</div>';
         google.maps.event.addListener(marker, 'click', function() {
             infoWindow.close();
 	        infoWindow.setContent(pname);
@@ -223,12 +228,14 @@
 
 	/**
 	 *	sets up google map to _map
-	 *	@param latlng is latitude and longitude values in array
+	 *	@param latlngp is latitude and longitude values in array
+	 *	latlngp is passed parameter now to prevent confusion
 	 */
-    function initialize(latlng) {
+    function initialize(latlngp) {
+		directionsService = new google.maps.DirectionsService();
         var mapCanvas = document.getElementById('map_canvas');
 	    var mapOptions = {
-			center: latlng,
+			center: latlngp,
 			zoomControl: true,
 	        zoomControlOptions: {
 	            style: google.maps.ZoomControlStyle.SMALL,
@@ -239,7 +246,72 @@
     	};
         _map = new google.maps.Map(mapCanvas, mapOptions);
 //		setTimeout("$('#map_canvas').gmap('refresh')",500);
+		directionsDisplay = new google.maps.DirectionsRenderer();
+		directionsDisplay.setMap(_map);
+		directionsDisplay.setPanel(document.getElementById('maplisting'));
     };
 
+	/**
+	 *	formats listing for map subpage
+	 *	@param params is GET request string
+	 *	@param natnl is category
+	 */
+	function formatmaplist(params, natnl) {
+		var numberList = document.getElementById("natlisting");
+	    var i;
+		var oldcat = "" ;
+		var namedist = "" ;
+		var natlist = (natnl == "National") ? listingType.natlist : listingType.fulllist;
+	    for(i = 0; i<returnedList.length; i++) {
+			if ( oldcat != returnedList[i].Type ) {
+				oldcat = returnedList[i].Type ;
+//				console.log("In formatlist, category is " + oldcat + " and length is " + returnedList.length + " and i is " + i);
+				namedist+= '<p class="nlist">' + oldcat + '</p>';
+			}
+            //create new text node
+			namedist += listhtml(i,natlist);
+			namedist += "<br>";
+	    }
+		numberList.innerHTML=namedist;
+		document.getElementById('waitlist').innerHTML = "&nbsp";
+
+		activate_subpage("#map_full_list"); // slides in list sub-page
+	};
+
+	/**
+	 *	onclick function for map complete listing
+	 */
+	function mapListFn(i) {
+		var mapperList = document.getElementById("maplisting");
+		var namedist = listhtml(i,listingType.infolist) ;
+		mapperList.innerHTML=namedist;
+
+		activate_subpage("#map_full_list"); // slides in list sub-page
+	};
+
+	/**
+	 *	onclick function for map directions
+	 */
+	function mapDirectFn(i) {
+		var start = latlng; // hopefully latlng global of map center
+		console.log("i is " + i );
+		console.log("Start is " + start);
+		var end = (markers[i] === undefined) ? markers[0].getPosition() : markers[i].getPosition(); // if there's only 1 marker
+		console.log("End   is " + start);
+		var request = {
+			origin: start,
+			destination: end,
+			travelMode: google.maps.TravelMode.DRIVING
+		};
+		directionsService.route(request, function(response, status) {
+			if (status == google.maps.DirectionsStatus.OK) {
+		        directionsDisplay.setOptions({ preserveViewport: true });
+		        directionsDisplay.setOptions({ suppressMarkers: true });
+				document.getElementById("maplisting").innerHTML="";
+				directionsDisplay.setDirections(response);
+			}
+		});
+		activate_subpage("#map_full_list"); // slides in list sub-page
+	};
 
 
