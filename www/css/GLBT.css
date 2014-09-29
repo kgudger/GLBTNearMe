@@ -129,24 +129,28 @@ img.displaycenter {
 	color: black !important;
 	height: 30px;
 	padding: 0px, 10px !important;
-	text-align: center;
+	text-align: center !important;
 	margin: auto;
 	max-width: 250px;
 	width: 100%;
+	background-color: white !important;
 }
 
 #purpleboxCategory select {
 	visibility: visible;
 	max-width: 280px;
+	border:0px !important;
+	vertical-align:middle;
 /*	width: 90%;
 	z-index: 3;
 	width: 258px;
 	left: 393px;
 	top: 594px;*/
-	height: 30px !important;
-	text-align: center;
-	color: black;
-/*	-webkit-appearance: none;*/
+	height: 100%;
+	text-align: center !important;
+	color: black !important;
+	background-color: transparent !important;
+	-webkit-appearance: none;
 }
 #purpleboxCategory {
 	overflow: hidden;
@@ -155,6 +159,7 @@ img.displaycenter {
 	max-width: 250px;
 	margin: auto;
 	text-align:center;
+	background-color: white !important;
 /*    position: absolute;
     left: 20%;
 	right: 20%;
@@ -260,3 +265,13 @@ img.isize {
 #map_full_list {
   background-color: white;
 }
+
+:-moz-placeholder { /* Firefox 18- */
+   text-align:center;  
+}
+
+::-webkit-input-placeholder {
+   text-align:center;
+}
+
+
