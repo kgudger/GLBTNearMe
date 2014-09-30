@@ -18,6 +18,8 @@
 		infolist: 2, // full listing with clickable links (no map pin)
 		natlist: 3,  // table w/ name, infoicon
 	};
+	
+	var update_date;
 
 	/**
 	 *	"Ajax" function that sends and processes xmlhttp request
@@ -78,6 +80,7 @@
 		var name2 = returnedList[i].Name2;
 		if (name2.length > 0)
 			namedist += "<br>" + name2;
+		console.log("namedist before is " + namedist);
 		var newnamedist = '<div>' ;
 
 		switch (listing) {
@@ -91,12 +94,13 @@
 				return newnamedist;
 				break;
 			case listingType.map:
-				newnamedist += '<div id="mappin"><a onClick="mapDirectFn(' + i + ')"value="Directions"><img src="images/car.png"></a></div><table><td>' + namedist + '</td><td style="width:30px;float:right"><a onClick="mapListFn(' + i + ')"value="More Info"><img src="images/arrows.png"></a></td></table>' ;
+				newnamedist += '<div id="mappin"><a onClick="mapDirectFn(' + i + ')"value="Directions"><img src="images/car.png"></a></div><table><td>' + namedist + '</td><td style="width:30px;float:right"><a onClick="mapListFn(' + i + ')"value="More Info"><img src="images/iOS_7_info_button.jpg"></a></td></table>' ;
 				return newnamedist;
 				break;
 			case listingType.infolist:
 			default:
-				namedist+= restOfList(namedist,i);
+				namedist = restOfList(namedist,i);
+				console.log("namedist after is " + namedist);
 				break;
 			} // end of switch
 		return namedist ;
@@ -124,7 +128,7 @@
 			namedist += "<br>" + city + ', ' + state + ' ' + zip;
 		var phone = returnedList[i].Phone;
 		if (phone.length > 0)
-			namedist += "<br>Phone: " + phone;
+			namedist += '<br>Phone: <a href="tel:+' + phone + '">' + phone + '</a>';
 		var hotline = returnedList[i].Hotline;
 		if (hotline.length > 0) {
 			var c = hotline.substr(0,1);

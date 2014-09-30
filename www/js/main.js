@@ -205,7 +205,7 @@
 	 */
 	function listformFn() {
 		if ( checkZip() ) {
-			document.getElementById('waitlist').innerHTML = "Please wait for list to load";
+			document.getElementById('updatedate').innerHTML = "<b>Please wait for list to load<b>";
 			var params = startlist() ;
 			listpagefunc(params,cat,queryType.list);
 		}
@@ -229,7 +229,7 @@
 	 *	onclick function for "National Organizations" button
 	 */
 	function nationalFn() {
-		document.getElementById('waitlist').innerHTML = "Please wait for list to load";
+		document.getElementById('updatedate').innerHTML = "<b>Please wait for list to load</b>";
 		var params = "national=Yes";
 		listpagefunc(params,"National",queryType.list);
 	};
@@ -239,6 +239,7 @@
 	function formatdate() {
 		var retstring = "Data Last Updated: " + returnedList ;
 		document.getElementById('updatedate').innerHTML = retstring;
+		update_date = retstring;
 	};
 
 	/**
@@ -263,7 +264,7 @@
 			namedist += "<br>";
 	    }
 		numberList.innerHTML=namedist;
-		document.getElementById('waitlist').innerHTML = "&nbsp";
+		document.getElementById('updatedate').innerHTML = update_date;
 
 		activate_subpage("#natsp"); // slides in list sub-page
 	};

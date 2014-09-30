@@ -63,6 +63,7 @@
 					} else {
 						onDeviceReady();
 					}*/
+					console.log("update_date is " + update_date);
 				}
 			);
 		function splashclick() {
@@ -113,9 +114,9 @@ Our youth talk line can be reached toll-free at<br><b>800-245-PRIDE</b><br>
 	var query = window.location.search.substring(1);
 	if (query.length > 0 ) {
 		splash.style.visibility = "hidden" ;
-	}
+	} // else
 //	alert("After splashscreen " + query.length);
-	listpagefunc("date=yes","",queryType.date);
+		listpagefunc("date=yes","",queryType.date);
 </script>
 </div>
 		<!-- content goes here-->
@@ -129,7 +130,7 @@ Our youth talk line can be reached toll-free at<br><b>800-245-PRIDE</b><br>
 						<img class="displaycenter setwidth" src="images/glbtnearmelogo.png"></td></tr><tr><td>
 						<div class="begin-div">
 							<p class="begin-txt">Find 15,000 gay, lesbian, bisexual, transgender<br>resources at your finger tips!</p>
-							<p id="updatedate" class="begin-txt">Data Last Updated: 2014-07-28 18:27:14</p>
+							<p id="updatedate" class="begin-txt">&nbsp</p>
 						</div> <!-- begin-div -->
 						</td></tr></table>
 <!--					</header> -->

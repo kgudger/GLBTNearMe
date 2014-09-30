@@ -270,8 +270,17 @@ img.isize {
    text-align:center;  
 }
 
-::-webkit-input-placeholder {
+input::-webkit-input-placeholder {
    text-align:center;
 }
+
+input::-moz-placeholder {
+   text-align:center;
+}
+
+input[placeholder] {
+   text-align:center !important;
+}
+
 
 

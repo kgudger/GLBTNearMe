@@ -34,7 +34,7 @@
 		    try {
         		if (intel.xdk.device.platform.indexOf("Android") != -1) {
         		    intel.xdk.display.useViewport(480, 480);
-        		    document.getElementById("map_canvas").style.width = "480px";
+//        		    document.getElementById("map_canvas").style.width = "480px";
         		} else if (intel.xdk.device.platform.indexOf("iOS") != -1) {
         		    if (intel.xdk.device.model.indexOf("iPhone") != -1 || intel.xdk.device.model.indexOf("iPod") != -1) {
         		        intel.xdk.display.useViewport(320, 320);
