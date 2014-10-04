@@ -70,6 +70,10 @@
 	function listhtml(i, listing) {
 		listing = (typeof listing === "undefined") ? listingType.fulllist : listing;
 		var namedist = returnedList[i].Name;
+		var name2 = returnedList[i].Name2;
+		if (name2.length > 0)
+			namedist += "<br>" + name2;
+//		console.log("namedist before is " + namedist);
 		var dist = returnedList[i].Distance;
 		if (dist > 0)
 			namedist += ' - ' + dist + ' Miles';
@@ -77,10 +81,6 @@
 			if (listing != listingType.natlist) 
 				namedist += ' - <1 mile';
 		}
-		var name2 = returnedList[i].Name2;
-		if (name2.length > 0)
-			namedist += "<br>" + name2;
-		console.log("namedist before is " + namedist);
 		var newnamedist = '<div>' ;
 
 		switch (listing) {
@@ -90,11 +90,11 @@
 				newnamedist+= '<div id="mappin"><a onclick="mapone(' + i + ')"><img src="' + iconchar +'</div>';
 				// drop into natlist for rest of div
 			case listingType.natlist:
-				newnamedist += '<div><div class="ilist">' + namedist + '</div><div class="iicon"><a onclick="full_list(' + i + ')"><img class = "isize" src="images/iOS_7_info_button.jpg"></a></div></div>';
+				newnamedist += '<div><div class="ilist"><a onclick="full_list(' + i + ')">' + namedist + '</div><div class="iicon"><img class = "isize" src="images/iOS_7_info_button.jpg"></a></div></div>';
 				return newnamedist;
 				break;
 			case listingType.map:
-				newnamedist += '<div id="mappin"><a onClick="mapDirectFn(' + i + ')"value="Directions"><img src="images/car.png"></a></div><table><td>' + namedist + '</td><td style="width:30px;float:right"><a onClick="mapListFn(' + i + ')"value="More Info"><img src="images/iOS_7_info_button.jpg"></a></td></table>' ;
+				newnamedist += '<div id="mappin"><a onClick="mapDirectFn(' + i + ')"value="Directions"><img src="images/car.png"></a></div><table><td><a onClick="mapListFn(' + i + ')"value="More Info">' + namedist + '</a></td><td style="width:30px;float:right"><a onClick="mapListFn(' + i + ')"value="More Info"><img src="images/iOS_7_info_button.jpg"></a></td></table>' ;
 				return newnamedist;
 				break;
 			case listingType.infolist:

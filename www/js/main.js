@@ -22,6 +22,7 @@
 		map: 1,
 		date: 2,
 	};
+	var waittext = "<br><b>PLEASE WAIT FOR LIST TO LOAD</b><br>"
 
 	/* Intel native bridge is available */
 	/** 
@@ -205,7 +206,7 @@
 	 */
 	function listformFn() {
 		if ( checkZip() ) {
-			document.getElementById('updatedate').innerHTML = "<b>Please wait for list to load<b>";
+			document.getElementById('waitlist').innerHTML = waittext;
 			var params = startlist() ;
 			listpagefunc(params,cat,queryType.list);
 		}
@@ -229,7 +230,7 @@
 	 *	onclick function for "National Organizations" button
 	 */
 	function nationalFn() {
-		document.getElementById('updatedate').innerHTML = "<b>Please wait for list to load</b>";
+		document.getElementById('waitlist').innerHTML = waittext;
 		var params = "national=Yes";
 		listpagefunc(params,"National",queryType.list);
 	};
@@ -238,7 +239,6 @@
 	 */
 	function formatdate() {
 		var retstring = "Data Last Updated: " + returnedList ;
-		document.getElementById('updatedate').innerHTML = retstring;
 		update_date = retstring;
 	};
 
@@ -264,7 +264,7 @@
 			namedist += "<br>";
 	    }
 		numberList.innerHTML=namedist;
-		document.getElementById('updatedate').innerHTML = update_date;
+		document.getElementById('waitlist').innerHTML = "<br>&nbsp<br>";
 
 		activate_subpage("#natsp"); // slides in list sub-page
 	};
