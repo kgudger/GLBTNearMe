@@ -22,12 +22,28 @@
 		map: 1,
 		date: 2,
 	};
+	var waittext = "<br><b>PLEASE WAIT FOR LIST TO LOAD</b><br>"
 
 	/* Intel native bridge is available */
 	/** 
 	 *	Fires when intel code says device is ready
 	 */
 	var onDeviceReady=function(){
+		try {
+    		if (intel.xdk.device.platform.indexOf("Android") != -1) {
+       		    intel.xdk.display.useViewport(480, 480);
+       		} else if (intel.xdk.device.platform.indexOf("iOS") != -1) {
+       		    if (intel.xdk.device.model.indexOf("iPhone") != -1 || intel.xdk.device.model.indexOf("iPod") != -1) {
+       		        intel.xdk.display.useViewport(320, 320);
+       		    } else if (intel.xdk.device.model.indexOf("iPad") != -1) {
+       		        intel.xdk.display.useViewport(768, 768);
+       		    }
+       		}
+       		if (intel.xdk.iswin8) {
+       		}
+	    } catch (e) {
+//		        alert(e.message);
+	    }
 		if ( ( typeof QueryString["lat"] === "undefined" ) ||
 			 ( QueryString["lat"] == "" ) ||
 			 ( QueryString["lat"] == 0 ) ) {
@@ -138,29 +154,10 @@
 	 *	opens window in browser for the donate button
 	 */
 	function donateFn() {
-//		intel.xdk.device.launchExternal("http://www.volunteerlogin.org/GLBTNearMe/donate.html");
-		window.open('http://www.volunteerlogin.org/GLBTNearMe/donate.html');
-	};
-
-	/** formats GET query string
-	 */
-	function GETform(infourl) {
-		var locstring = infourl + "?lat=" + currentLatitude + "&lon=" + currentLongitude ;
-		locstring += "&zipcode=" + document.getElementById('distform').elements["zipcode"].value;
-		locstring += "&milesdist=" + document.getElementById('distform').elements["milesdist"].value;
-		var cat = document.getElementById('distform').elements["catselect"].value;
-		cat = cat.replace(/ /g,"+"); 
-		locstring += "&category=" + cat;
-		return locstring ;
-	}
-	/**
-	 *	opens window in browser for the donate button
-	 */
-	function infoFn() {
-//		intel.xdk.device.launchExternal("http://www.volunteerlogin.org/GLBTNearMe/donate.html");
-//		window.location('info.html');
-		var locstring = GETform("info.html");
-		location.href = locstring;
+		if (typeof (intel.xdk.device) === 'undefined') 
+			window.open('https://donatenow.networkforgood.org/1210845','_system');
+		else
+			intel.xdk.device.launchExternal('https://donatenow.networkforgood.org/1210845');
 	};
 
 	/** formats map page with the one marker
@@ -209,6 +206,7 @@
 	 */
 	function listformFn() {
 		if ( checkZip() ) {
+			document.getElementById('waitlist').innerHTML = waittext;
 			var params = startlist() ;
 			listpagefunc(params,cat,queryType.list);
 		}
@@ -232,6 +230,7 @@
 	 *	onclick function for "National Organizations" button
 	 */
 	function nationalFn() {
+		document.getElementById('waitlist').innerHTML = waittext;
 		var params = "national=Yes";
 		listpagefunc(params,"National",queryType.list);
 	};
@@ -240,7 +239,7 @@
 	 */
 	function formatdate() {
 		var retstring = "Data Last Updated: " + returnedList ;
-		document.getElementById('updatedate').innerHTML = retstring;
+		update_date = retstring;
 	};
 
 	/**
@@ -253,19 +252,34 @@
 	    var i;
 		var oldcat = "" ;
 		var namedist = "" ;
+		var natlist = (natnl == "National") ? listingType.natlist : listingType.fulllist;
 	    for(i = 0; i<returnedList.length; i++) {
 			if ( oldcat != returnedList[i].Type ) {
 				oldcat = returnedList[i].Type ;
+//				console.log("In formatlist, category is " + oldcat + " and length is " + returnedList.length + " and i is " + i);
 				namedist+= '<p class="nlist">' + oldcat + '</p>';
 			}
             //create new text node
-			var natlist = (natnl == "National") ? false : true;
 			namedist += listhtml(i,natlist);
-			namedist += "<br><br>";
+			namedist += "<br>";
 	    }
 		numberList.innerHTML=namedist;
+		document.getElementById('waitlist').innerHTML = "<br>&nbsp<br>";
+
 		activate_subpage("#natsp"); // slides in list sub-page
 	};
+
+	/**
+	 *	formats data for individual listing and calls sub-page swap
+	 *	@param i is index into list
+	 */
+	function full_list(i) {
+		var listdata = document.getElementById("natsinglelist");
+		var listing = listhtml(i, listingType.infolist);
+		listdata.innerHTML=listing;
+		activate_subpage("#uib_page_detail"); // slides in sub-list detail page.
+	}
+
 	/**
 	 *	sets up form to latitude and longitude
 	 */

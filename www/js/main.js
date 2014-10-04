@@ -22,7 +22,7 @@
 		map: 1,
 		date: 2,
 	};
-	var waittext = "<br><b>PLEASE WAIT FOR LIST TO LOAD</b><br>"
+	var waittext = "<br><b><i>PLEASE WAIT FOR LIST TO LOAD</i></b><br>"
 
 	/* Intel native bridge is available */
 	/** 
@@ -239,6 +239,7 @@
 	 */
 	function formatdate() {
 		var retstring = "Data Last Updated: " + returnedList ;
+ 		document.getElementById('updatedate').innerHTML = retstring;
 		update_date = retstring;
 	};
 
