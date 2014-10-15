@@ -63,6 +63,7 @@
 					} else {
 						onDeviceReady();
 					}*/
+					console.log("update_date is " + update_date);
 				}
 			);
 		function splashclick() {
@@ -102,9 +103,9 @@
 <p class="splashtext"><b>OR</b><br>If you need peer-support or want to speak directly with one of our volunteers, you can call our toll-free hotline at<br>
 <!-- <a href="#" onclick="AppMobi.device.launchExternal('tel:8888434564');"><b>888-843-4564</b></a><br> -->
 <a href="tel:+1-888-843-4564"><b>888-843-4564</b></a><br>
-Our youth talk line can be reached toll-free at<br><b>800-245-PRIDE</b><br>
+Our youth talk line can be reached toll-free at<br><b>800-246-PRIDE</b><br>
 <!-- <a href="#" onclick="AppMobi.device.launchExternal('tel:8002467743');"><b>(800-246-7743)</b></a><br> -->
-<a href="tel:+1-888-246-7743"><b>888-246-7743</b></a><br>
+<a href="tel:+1-800-246-7743"><b>800-246-7743</b></a><br>
 <a href="#" onclick="splashclick()"><b>www.GLBThotline.org</b></a></p>
 	</div> <!-- splashbox -->
 </div> <!-- splashscreen -->
@@ -113,9 +114,9 @@ Our youth talk line can be reached toll-free at<br><b>800-245-PRIDE</b><br>
 	var query = window.location.search.substring(1);
 	if (query.length > 0 ) {
 		splash.style.visibility = "hidden" ;
-	}
+	} // else
 //	alert("After splashscreen " + query.length);
-	listpagefunc("date=yes","",queryType.date);
+		listpagefunc("date=yes","",queryType.date);
 </script>
 </div>
 		<!-- content goes here-->
@@ -129,7 +130,7 @@ Our youth talk line can be reached toll-free at<br><b>800-245-PRIDE</b><br>
 						<img class="displaycenter setwidth" src="images/glbtnearmelogo.png"></td></tr><tr><td>
 						<div class="begin-div">
 							<p class="begin-txt">Find 15,000 gay, lesbian, bisexual, transgender<br>resources at your finger tips!</p>
-							<p id="updatedate" class="begin-txt">Data Last Updated: 2014-07-28 18:27:14</p>
+							<p id="updatedate" class="begin-txt">&nbsp</p>
 						</div> <!-- begin-div -->
 						</td></tr></table>
 <!--					</header> -->
@@ -143,8 +144,7 @@ Our youth talk line can be reached toll-free at<br><b>800-245-PRIDE</b><br>
        Enter Miles<br><input class="purpletext" type="text" maxlength="4" size="15" name="milesdist"/><br /><p>Select a Category</p>
 								<div id="purpleboxCategory">
  
-   <span class='css-select-moz'>
-   <select name="category" size="1" tabindex="3" size="1" id="catselect">
+   <select name="category" tabindex="3" id="catselect">
      <option selected value="All Categories">All Categories</option>
    	<option value="Aids">Aids</option>
 		<option value="Bar/Club">Bar/Club</option>
@@ -174,8 +174,9 @@ Our youth talk line can be reached toll-free at<br><b>800-245-PRIDE</b><br>
 		<option value="Transgender">Transgender</option>
 		<option value="Youth">Youth</option>
    </select>
-   </span>
-								</div><br><br> <!-- purpleboxCategory -->
+								</div>  <!-- purpleboxCategory -->
+								<div id="waitlist""><br>&nbsp<br>
+								</div>  <!-- waitlist -->
 								<div id="buttonlist" style="width:50%; float:left;">
 <input class="buttonleft orangeButton" type="button" name="List" value="List" onclick="listformFn()">
 								</div> <!-- buttonlist -->
@@ -196,7 +197,7 @@ Our youth talk line can be reached toll-free at<br><b>800-245-PRIDE</b><br>
 						<div id="button2" style="width:50%;float:right">
 <input class="buttonright purpleButton" type="button" name="Donate" value="Donate Online" onclick="donateFn()"><br>
 						</div> <!-- button2 -->
-						<div id="waitlist" style="width:100%;text-align:center; color:black; font-size: 14px;">&nbsp</div>
+						<div> &nbsp</div> <!-- makes i button right -->
 						<div id="oldfoot" style="width:100%">
 						<table style="width:100%"> <tr><td>
 						<a href="#" onclick="infoFn()"><img src="images/InfoCircle.png"></a></td>
@@ -208,7 +209,7 @@ Our youth talk line can be reached toll-free at<br><b>800-245-PRIDE</b><br>
 						</td></tr></table>
 						</div>
 					</div> <!-- mainsub -->
-					<div id="uib_page_detail" class="upage-content hidden">
+					<div id="uib_page_detail" class="upage-content hidden" style="background-color: white !important;">
 						<div>
 							<div id="buttonbacksub" class="backbutton"><a class="widget uib_w_4 orangeButton" data-uib="app_framework/button" data-ver="1" href="#mainpage" data-transition="fade">Back</a>
 							</div>

@@ -240,7 +240,6 @@
 	function formatdate() {
 		var retstring = "Data Last Updated: " + returnedList ;
  		document.getElementById('updatedate').innerHTML = retstring;
-		update_date = retstring;
 	};
 
 	/**
@@ -253,7 +252,12 @@
 	    var i;
 		var oldcat = "" ;
 		var namedist = "" ;
-		var natlist = (natnl == "National") ? listingType.natlist : listingType.fulllist;
+		if (natnl == "National") { 
+			natlist = listingType.natlist;
+			national = true ;
+		} else
+			natlist = listingType.fulllist;
+
 	    for(i = 0; i<returnedList.length; i++) {
 			if ( oldcat != returnedList[i].Type ) {
 				oldcat = returnedList[i].Type ;
@@ -264,6 +268,10 @@
 			namedist += listhtml(i,natlist);
 			namedist += "<br>";
 	    }
+
+		if ( namedist.length == 0 ) { // no results found
+			namedist = '<div class="nolist">No results found.  Please modify your search criteria.</div>';
+		}
 		numberList.innerHTML=namedist;
 		document.getElementById('waitlist').innerHTML = "<br>&nbsp<br>";
 

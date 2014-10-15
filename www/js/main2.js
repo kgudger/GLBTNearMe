@@ -248,7 +248,7 @@
 //		setTimeout("$('#map_canvas').gmap('refresh')",500);
 		directionsDisplay = new google.maps.DirectionsRenderer();
 		directionsDisplay.setMap(_map);
-		directionsDisplay.setPanel(document.getElementById('maplisting'));
+		directionsDisplay.setPanel(document.getElementById('natsinglelist'));
     };
 
 	/**
@@ -282,7 +282,7 @@
 	 *	onclick function for map complete listing
 	 */
 	function mapListFn(i) {
-		var mapperList = document.getElementById("maplisting");
+		var mapperList = document.getElementById("natsinglelist");
 		var namedist = listhtml(i,listingType.infolist) ;
 		mapperList.innerHTML=namedist;
 
@@ -307,7 +307,7 @@
 			if (status == google.maps.DirectionsStatus.OK) {
 		        directionsDisplay.setOptions({ preserveViewport: true });
 		        directionsDisplay.setOptions({ suppressMarkers: true });
-				document.getElementById("maplisting").innerHTML="";
+				document.getElementById("natsinglelist").innerHTML="";
 				directionsDisplay.setDirections(response);
 			}
 		});

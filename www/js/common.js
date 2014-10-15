@@ -19,7 +19,7 @@
 		natlist: 3,  // table w/ name, infoicon
 	};
 	
-	var update_date;
+	var national = false;
 
 	/**
 	 *	"Ajax" function that sends and processes xmlhttp request
@@ -70,18 +70,19 @@
 	function listhtml(i, listing) {
 		listing = (typeof listing === "undefined") ? listingType.fulllist : listing;
 		var namedist = returnedList[i].Name;
-		var name2 = returnedList[i].Name2;
-		if (name2.length > 0)
-			namedist += "<br>" + name2;
 //		console.log("namedist before is " + namedist);
+		var newnamedist = '<div>' ;
+		var name2 = returnedList[i].Name2;
+		if ( name2 && name2.length > 0)
+			namedist += "<br>" + name2;
 		var dist = returnedList[i].Distance;
 		if (dist > 0)
 			namedist += ' - ' + dist + ' Miles';
 		else { 
-			if (listing != listingType.natlist) 
+			if ( (listing != listingType.natlist) &&
+				 (!national) )
 				namedist += ' - <1 mile';
 		}
-		var newnamedist = '<div>' ;
 
 		switch (listing) {
 			case listingType.fulllist:
@@ -100,7 +101,7 @@
 			case listingType.infolist:
 			default:
 				namedist = restOfList(namedist,i);
-				console.log("namedist after is " + namedist);
+//				console.log("namedist after is " + namedist);
 				break;
 			} // end of switch
 		return namedist ;
@@ -114,39 +115,66 @@
  */
 	function restOfList(namedist,i) {
 
+		namedist = "<p><b>Name</b><br>" + namedist + "</p>"
 		var address1 = returnedList[i].Address1;
-		if (address1.length > 0) {
-			namedist += '<br>' + address1;
+		if (address1 && address1.length > 0) {
+			namedist += '<p><b>Address</b><br>' + address1;
+			var address2 = returnedList[i].Address2;
+			if (address2 && address2.length > 0)
+				namedist += "<br>" + address2;
+			var city = returnedList[i].City;
+			var state = returnedList[i].State;
+			var zip  = returnedList[i].Zip;
+			if (city && city.length > 0)
+				namedist += "<br>" + city + ', ' + state + ' ' + zip;
+			namedist += "</p>" ;
 		}
-		var address2 = returnedList[i].Address2;
-		if (address2.length > 0)
-			namedist += "<br>" + address2;
-		var city = returnedList[i].City;
-		var state = returnedList[i].State;
-		var zip  = returnedList[i].Zip;
-		if (city.length > 0)
-			namedist += "<br>" + city + ', ' + state + ' ' + zip;
 		var phone = returnedList[i].Phone;
-		if (phone.length > 0)
+		if (phone && phone.length > 0) {
+			namedist += '<p><b>Phone</b>' ;
 			namedist += '<br>Phone: <a href="tel:+' + phone + '">' + phone + '</a>';
-		var hotline = returnedList[i].Hotline;
-		if (hotline.length > 0) {
-			var c = hotline.substr(0,1);
-			if (c >= '0' && c <= '9') {
-				namedist += "<br>Hotline: " + hotline;
+			var fax = returnedList[i].Fax;
+			if (fax && fax.length > 0) {
+				namedist += '<br>Fax: ' + fax ;
+			}				
+			var hotline = returnedList[i].Hotline;
+			if (hotline && hotline.length > 0) {
+				var c = hotline.substr(0,1);
+				if (c >= '0' && c <= '9') {
+					namedist += '<br>Hotline: <a href="tel:+' + hotline + '">' + hotline + '</a>';;
+				}
 			}
+			namedist += "</p>" ;
 		}
 		var internet = returnedList[i].Internet;
-		if (internet.length > 0)
-			namedist += '<br>Email: <a href="#" onclick="emailclick(' + "'" + internet + "'" + ')">' + internet + '</a>';
 		var web = returnedList[i].Web;
-		if (web.length > 0) 
-			namedist += '<br>Web: <a href="#" onclick="moreclick(' + "'" + web + "'" + ')">' + web + '</a>';
+
+		if ( internet || web ) {
+			namedist += '<p><b>Web</b>';
+			if (internet && internet.length > 0)
+				namedist += '<br>Email: <a href="#" onclick="emailclick(' + "'" + internet + "'" + ')">' + internet + '</a>';
+			if (web && web.length > 0) 
+				namedist += '<br>Web: <a href="#" onclick="moreclick(' + "'" + web + "'" + ')">' + web + '</a>';
+			namedist += "</p>";
+		}
+
+		var descript = returnedList[i].Descript ;
 		var moreinfo = returnedList[i].moreInformation;
-		if (moreinfo.length > 0) {
-			moreinfo = moreinfo.replace(/\n/g, "<br>");
-			moreinfo = moreinfo.replace(/["']/g, "");
-			namedist += '<br><br>' + moreinfo;
+		var subcat = returnedList[i].sub-cat ;
+
+		if ( descript || moreinfo || subcat ) {
+			namedist += '<p><b>Description</b>';
+			if (descript && descript.length > 0) {
+				namedist += '<br>' + descript ;
+			}
+			if (moreinfo && moreinfo.length > 0) {
+				moreinfo = moreinfo.replace(/\n/g, "<br>");
+				moreinfo = moreinfo.replace(/["']/g, "");
+				namedist += '<br>' + moreinfo;
+			}
+			if (subcat && subcat.length > 0) {
+				namedist += '<br><br>Sub-categories: ' + subcat ;
+			}
 		}
 		return namedist;
 	} // end of restOfList

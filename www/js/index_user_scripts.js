@@ -10,6 +10,7 @@
     
          $(document).on("click", ".uib_w_3", function(evt)
         {
+			national = false;
 			activate_subpage("#mainsub"); 
         });
         
