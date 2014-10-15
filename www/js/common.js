@@ -160,7 +160,10 @@
 
 		var descript = returnedList[i].Descript ;
 		var moreinfo = returnedList[i].moreInformation;
-		var subcat = returnedList[i].sub-cat ;
+		var subcat = returnedList[i]['sub-cat'] ;
+		console.log("Descript is :" + descript);
+		console.log("Sub-Cat is :" + subcat);
+		console.log(returnedList[i]);
 
 		if ( descript || moreinfo || subcat ) {
 			namedist += '<p><b>Description</b>';
