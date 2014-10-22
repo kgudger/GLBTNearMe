@@ -53,7 +53,7 @@
 //				  console.log("geolocation !== null", 4);
 				}
 			} catch(e) { 
-				alert(e.message);
+//				alert(e.message);
 //				console.log("geo watch failed",1);
 			}
 		} else {
