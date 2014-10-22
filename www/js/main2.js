@@ -294,10 +294,10 @@
 	 */
 	function mapDirectFn(i) {
 		var start = latlng; // hopefully latlng global of map center
-		console.log("i is " + i );
-		console.log("Start is " + start);
+//		console.log("i is " + i );
+//		console.log("Start is " + start);
 		var end = (markers[i] === undefined) ? markers[0].getPosition() : markers[i].getPosition(); // if there's only 1 marker
-		console.log("End   is " + start);
+//		console.log("End   is " + start);
 		var request = {
 			origin: start,
 			destination: end,

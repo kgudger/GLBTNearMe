@@ -50,11 +50,11 @@
 			try {
 		        if (intel.xdk.geolocation !== null) {
 	     	      intel.xdk.geolocation.watchPosition(suc, fail, options);
-				  console.log("geolocation !== null", 4);
+//				  console.log("geolocation !== null", 4);
 				}
 			} catch(e) { 
 				alert(e.message);
-				console.log("geo watch failed",1);
+//				console.log("geo watch failed",1);
 			}
 		} else {
 			queryReady();
@@ -138,7 +138,7 @@
 	 *	@param p is passed from intel library function
 	 */
 	var suc = function(p) {
-	    console.log("geolocation success", 4);
+//	    console.log("geolocation success", 4);
 	    //Draws the map initially
     	currentLatitude = p.coords.latitude;
     	currentLongitude = p.coords.longitude;
