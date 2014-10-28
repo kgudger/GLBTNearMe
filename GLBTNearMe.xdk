@@ -5,7 +5,7 @@
       "type": "App Designer",
       "src": "appDesigner",
       "projectGuid": "efea7905-cbe4-4768-9b5b-7fd24dd2819f",
-      "lastModifiedDate": 1408338639618,
+      "lastModifiedDate": 1414531082183,
       "creationDate": 1404513454984
     },
     "XDK-app-designer": "true",
@@ -171,13 +171,38 @@
             "width": 36
           }
         ],
-        "splashes_": [],
+        "splashes_": [
+          {
+            "relPath": "images/LOADPAGEL.png",
+            "density": "ldpi",
+            "height": 426,
+            "width": 320
+          },
+          {
+            "relPath": "images/LOADPAGEM.png",
+            "density": "mdpi",
+            "height": 470,
+            "width": 320
+          },
+          {
+            "relPath": "images/LOADPAGEH.png",
+            "density": "hdpi",
+            "height": 640,
+            "width": 480
+          },
+          {
+            "relPath": "images/LOADPAGEXH.png",
+            "density": "xhdpi",
+            "height": 960,
+            "width": 720
+          }
+        ],
         "iosProvs_": [],
         "addlPermissions_": "<preference;name=\"android-permission\";value=\"<CALL_PHONE\">;/>",
         "excludedLibraries_": "",
         "cordovaCLIVersion_": "3.3",
         "crosswalkVersion_": "stable",
-        "appVersion_": "1.0.6",
+        "appVersion_": "1.0",
         "runtime_": "Cordova 3.x",
         "appDescription_": "Over 15,000 resources for the gay, lesbian, bisexual, transgender and questioning community nationwide.",
         "appAuthor_": "Keith Gudger",
