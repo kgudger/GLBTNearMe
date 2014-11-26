@@ -5,7 +5,7 @@
       "type": "App Designer",
       "src": "appDesigner",
       "projectGuid": "efea7905-cbe4-4768-9b5b-7fd24dd2819f",
-      "lastModifiedDate": 1414531082183,
+      "lastModifiedDate": 1416834727453,
       "creationDate": 1404513454984
     },
     "XDK-app-designer": "true",
@@ -137,13 +137,13 @@
         "name_": "Android",
         "preferences_": {
           "Orientation": "portrait",
-          "android-targetedSdkVersion": "4.1",
-          "android-minSdkVersion": "10",
+          "android-targetedSdkVersion": "17",
+          "android-minSdkVersion": "14",
           "android-signed": true
         },
         "isActive_": true,
         "appName_": "GLBTNearMe",
-        "appID_": "not.yet.specified",
+        "appID_": "com.glbtnationalhelpcenter.glbtnearme",
         "appAccess_": "*",
         "icons_": [
           {
@@ -200,13 +200,13 @@
         "iosProvs_": [],
         "addlPermissions_": "<preference;name=\"android-permission\";value=\"<CALL_PHONE\">;/>",
         "excludedLibraries_": "",
-        "cordovaCLIVersion_": "3.3",
+        "cordovaCLIVersion_": "3.5.1",
         "crosswalkVersion_": "stable",
-        "appVersion_": "1.0",
+        "appVersion_": "1.1",
         "runtime_": "Cordova 3.x",
         "appDescription_": "Over 15,000 resources for the gay, lesbian, bisexual, transgender and questioning community nationwide.",
         "appAuthor_": "Keith Gudger",
-        "appVersionCode_": ""
+        "appVersionCode_": "2"
       },
       "Android-Crosswalk": {
         "platform_": "android",
