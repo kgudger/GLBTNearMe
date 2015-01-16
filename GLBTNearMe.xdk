@@ -5,7 +5,7 @@
       "type": "App Designer",
       "src": "appDesigner",
       "projectGuid": "efea7905-cbe4-4768-9b5b-7fd24dd2819f",
-      "lastModifiedDate": 1416834727453,
+      "lastModifiedDate": 1419185093993,
       "creationDate": 1404513454984
     },
     "XDK-app-designer": "true",
@@ -134,12 +134,13 @@
     "buildConfigurations": {
       "Android": {
         "platform_": "android",
+        "runtime_": "Cordova 3.x",
         "name_": "Android",
         "preferences_": {
           "Orientation": "portrait",
-          "android-targetedSdkVersion": "17",
           "android-minSdkVersion": "14",
-          "android-signed": true
+          "android-signed": true,
+          "android-targetSdkVersion": "17"
         },
         "isActive_": true,
         "appName_": "GLBTNearMe",
@@ -200,22 +201,22 @@
         "iosProvs_": [],
         "addlPermissions_": "<preference;name=\"android-permission\";value=\"<CALL_PHONE\">;/>",
         "excludedLibraries_": "",
-        "cordovaCLIVersion_": "3.5.1",
+        "cordovaCLIVersion_": "3.3",
         "crosswalkVersion_": "stable",
         "appVersion_": "1.1",
-        "runtime_": "Cordova 3.x",
         "appDescription_": "Over 15,000 resources for the gay, lesbian, bisexual, transgender and questioning community nationwide.",
         "appAuthor_": "Keith Gudger",
         "appVersionCode_": "2"
       },
       "Android-Crosswalk": {
         "platform_": "android",
+        "runtime_": "Crosswalk with Cordova 3.x",
         "name_": "Android-Crosswalk",
         "preferences_": {
           "Orientation": "portrait",
           "android-signed": true,
           "android-minSdkVersion": "4.0",
-          "android-targetedSdkVersion": "4.4"
+          "android-targetSdkVersion": "4.4"
         },
         "isActive_": true,
         "appName_": "GLBTNearMe",
@@ -254,11 +255,11 @@
         "cordovaCLIVersion_": "3.3",
         "crosswalkVersion_": "stable",
         "appVersion_": "1.0.4",
-        "runtime_": "Crosswalk with Cordova 3.x",
         "appDescription_": "Over 15,000 resources for the gay, lesbian, bisexual, transgender and questioning community nationwide."
       },
       "iOS": {
         "platform_": "ios",
+        "runtime_": "Cordova 3.x",
         "name_": "iOS",
         "preferences_": {},
         "isActive_": true,
@@ -278,11 +279,11 @@
         "excludedLibraries_": "",
         "cordovaCLIVersion_": "3.3",
         "crosswalkVersion_": "stable",
-        "appVersion_": "1.0.0",
-        "runtime_": "Cordova 3.x"
+        "appVersion_": "1.0.0"
       },
       "Windows8": {
         "platform_": "windows8",
+        "runtime_": "Cordova 3.x",
         "name_": "Windows8",
         "preferences_": {},
         "isActive_": true,
@@ -296,11 +297,11 @@
         "excludedLibraries_": "",
         "cordovaCLIVersion_": "3.3",
         "crosswalkVersion_": "stable",
-        "appVersion_": "1.0.0.0",
-        "runtime_": "Cordova 3.x"
+        "appVersion_": "1.0.0.0"
       },
       "WindowsPhone8": {
         "platform_": "wp8",
+        "runtime_": "Cordova 3.x",
         "name_": "WindowsPhone8",
         "preferences_": {},
         "isActive_": true,
@@ -314,9 +315,11 @@
         "excludedLibraries_": "",
         "cordovaCLIVersion_": "3.3",
         "crosswalkVersion_": "stable",
-        "appVersion_": "1.0.0.0",
-        "runtime_": "Cordova 3.x"
+        "appVersion_": "1.0.0.0"
       }
-    }
+    },
+    "gameAssetDirectory": "asset",
+    "gameMetadata": {},
+    "projectTags": []
   }
 }

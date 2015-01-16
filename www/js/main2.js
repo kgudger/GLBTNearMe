@@ -60,9 +60,10 @@
 			document.getElementById("lonin").value = currentLongitude;
 			if ( typeof QueryString["category"] !== "undefined" )  {
 				var firstval = QueryString["category"];			
-				var decodeval = decodeURI(firstval);
-				decodeval = decodeval.replace(/[+]/g, " ");
-//				alert("Values are " + firstval + "," + decodeval);
+				var decodeval = decodeURIComponent(firstval.replace(/\+/g,  " "));
+//				var decodeval = decodeURI(firstval);
+//				decodeval = decodeval.replace(/[+]/g, " ");
+				alert("Values are " + firstval + "," + decodeval);
 				document.getElementById('distform').elements["catselect"].value = decodeval;
 			}
 			if ( typeof QueryString["zipcode"] !== "undefined" ) 
@@ -72,35 +73,6 @@
 			var params = startlist() ;
 			listpagefunc(params,"",queryType.map);
 		}
-	/**
-	 *	Sets up GET parameters for the REQUEST from the form
-	 *	@return GET string
-	 */
-	function getinitparams() {
-		var zip = QueryString["zipcode"] ; // from GET params
-		var params = "" ;
-		var miles = ""
-		miles += QueryString["milesdist"];
-		if ( zip != "" ) 
-			params = "zip=" + zip;
-		else { 
-			params = "latitude=" + currentLatitude + "&longitude=" + currentLongitude ;
-		}
-		if ((miles.length > 0) && (miles > 0))
-				params+= "&miles=" + miles;
-		return params;
-	};
-
-	/**
-	 *	gets category from form and adds to GET request
-	 *	@return GET string
-	 */
-	function startlist() {
-		var params = getinitparams();
-		cat = QueryString["category"];
-		params += "&category=" + encodeURI(cat);
-		return params;
-	}
 
 	/**
 	 *	formats map page, deletes old markers, checks to see if

@@ -96,10 +96,12 @@
 	    initialize(); // assigns google map
 
 		if ( typeof QueryString["category"] !== "undefined" ) {
-		  var elmnt = document.getElementById('catselect')
-		  var value = decodeURI(QueryString["category"]);
-		  value = value.replace(/[+]/g, " ");
-//		  alert("Category is " + value);
+		  var elmnt = document.getElementById('catselect');
+    	  var encoded = elmnt.value;
+		  var value = decodeURIComponent(QueryString["category"].replace(/\+/g,  " "));
+//			decodeURI(QueryString["category"]);
+//		  value = value.replace(/[+]/g, " ");
+		  alert("Category is " + value + ", encoded is " + encoded);
 		  for(var i=0; i < elmnt.options.length; i++)
 		  {
 		    if(elmnt.options[i].value === value) {
@@ -175,32 +177,6 @@
 	function backtostart() {
 		window.location.hash = "mainsub";
 	};
-	/**
-	 *	Sets up GET parameters for the REQUEST from the form
-	 *	@return GET string
-	 */
-	function getinitparams() {
-		var zip = document.getElementById('distform').elements["zipcode"].value;
-		var params = "" ;
-		var miles = document.getElementById('distform').elements["milesdist"].value;
-		if ( zip != "" ) 
-			params = "zip=" + zip;
-		else
-			params = "latitude=" + currentLatitude + "&longitude=" + currentLongitude;
-		if ((miles.length > 0) && (miles > 0))
-			params+= "&miles=" + miles;
-		return params;
-	};
-	/**
-	 *	gets category from form and adds to GET request
-	 *	@return GET string
-	 */
-	function startlist() {
-		var params = getinitparams();
-		cat = document.getElementById('distform').elements["category"].value;
-		params += "&category=" + encodeURI(cat);
-		return params;
-	}
 	/**
 	 *	onclick function for "list" button
 	 */

@@ -33,6 +33,7 @@
 		    xmlhttp=new XMLHttpRequest();
 		} catch(e) {
 			xmlhttp = false;
+			console.log(e);
 		}
 		if (xmlhttp) {
 		    xmlhttp.onreadystatechange=function()
@@ -222,4 +223,30 @@
 		locstring += "&category=" + cat;
 		return locstring ;
 	}
+	/**
+	 *	gets category from form and adds to GET request
+	 *	@return GET string
+	 */
+	function startlist() {
+		var params = getinitparams();
+		cat = document.getElementById('distform').elements["category"].value;
+		params += "&category=" + encodeURIComponent(cat);
+		return params;
+	}
+	/**
+	 *	Sets up GET parameters for the REQUEST from the form
+	 *	@return GET string
+	 */
+	function getinitparams() {
+		var zip = document.getElementById('distform').elements["zipcode"].value;
+		var params = "" ;
+		var miles = document.getElementById('distform').elements["milesdist"].value;
+		if ( zip != "" ) 
+			params = "zip=" + zip;
+		else
+			params = "latitude=" + currentLatitude + "&longitude=" + currentLongitude;
+		if ((miles.length > 0) && (miles > 0))
+			params+= "&miles=" + miles;
+		return params;
+	};
 
