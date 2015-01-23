@@ -63,7 +63,7 @@
 				var decodeval = decodeURIComponent(firstval.replace(/\+/g,  " "));
 //				var decodeval = decodeURI(firstval);
 //				decodeval = decodeval.replace(/[+]/g, " ");
-				alert("Values are " + firstval + "," + decodeval);
+//				alert("Values are " + firstval + "," + decodeval);
 				document.getElementById('distform').elements["catselect"].value = decodeval;
 			}
 			if ( typeof QueryString["zipcode"] !== "undefined" ) 
@@ -149,7 +149,10 @@
 	 */
 	function createMarker(i,bounds) {
 		var latitude = returnedList[i].latitude;
+//		latitude = +latitude + i/10000;
 		var longitude = returnedList[i].longitude;
+//		longitude = +longitude + i/10000;
+//		console.log("i is " + i + " lat is " + latitude + " lon is " + longitude);
 		// latlngl is a local variable, renamed to prevent confusion
 		var latlngl = new google.maps.LatLng(latitude, longitude);
 		var pname = returnedList[i].Name;
@@ -159,8 +162,8 @@
 			position: latlngl,
 			map: _map,
 			title: pname,
-			icon: iconchar/*,
-			zIndex: 1000*/
+			icon: iconchar,
+			zIndex: 100-i,
 		});
 		marker.setMap(_map);
 		markers.push(marker); // array of all known markers
